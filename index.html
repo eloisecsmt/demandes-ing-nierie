@@ -115,14 +115,16 @@
                                 <option value="Veuf">Veuf</option>
                             </select>
                         </div>
-                        <div class="form-group" id="regimeGroup" style="display: none;">
-                            <label for="regimeMatrimonial">Régime matrimonial</label>
+                        <div class="form-group conditional-field" id="regimeGroup" style="display: none;">
+                            <label for="regimeMatrimonial">Régime matrimonial / Type de PACS</label>
                             <select id="regimeMatrimonial" name="regimeMatrimonial">
                                 <option value="">Sélectionner...</option>
                                 <option value="Communauté réduite aux acquêts">Communauté réduite aux acquêts</option>
                                 <option value="Communauté universelle">Communauté universelle</option>
                                 <option value="Séparation de biens">Séparation de biens</option>
                                 <option value="Participation aux acquêts">Participation aux acquêts</option>
+                                <option value="PACS civil">PACS civil</option>
+                                <option value="PACS notarié">PACS notarié</option>
                             </select>
                         </div>
                     </div>
@@ -131,9 +133,24 @@
                 <!-- Objectifs patrimoniaux -->
                 <div class="form-section">
                     <div class="section-title">Objectifs patrimoniaux</div>
-                    <div class="form-card">
+                    
+                    <div class="objectifs-common-section">
+                        <label class="checkbox-item objectifs-common-checkbox">
+                            <input type="checkbox" id="objectifsCommunsCheckbox" name="objectifsCommuns" checked>
+                            <span class="checkmark"></span>
+                            <strong>Les objectifs sont communs aux deux contacts</strong>
+                        </label>
+                        <p class="help-text">Si cette case n'est pas cochée, vous pourrez définir des objectifs différents pour chaque contact.</p>
+                    </div>
+
+                    <!-- Objectifs communs -->
+                    <div id="objectifsCommuns" class="form-card">
+                        <div class="card-header">
+                            <span class="card-icon">🎯</span>
+                            <h3>Objectifs patrimoniaux</h3>
+                        </div>
                         <div class="card-content">
-                            <div class="checkbox-group" id="objectifsGroup">
+                            <div class="checkbox-group">
                                 <label class="checkbox-item">
                                     <input type="checkbox" name="objectifs" value="Constitution d'un patrimoine">
                                     <span class="checkmark"></span>
@@ -175,24 +192,115 @@
                                     Investissement locatif
                                 </label>
                             </div>
-                            <div class="form-group" style="margin-top: 20px;">
-                                <label class="checkbox-item">
-                                    <input type="checkbox" id="objectifsCommunsCheckbox" name="objectifsCommuns">
-                                    <span class="checkmark"></span>
-                                    Les objectifs sont communs aux deux contacts
-                                </label>
+                        </div>
+                    </div>
+
+                    <!-- Objectifs séparés -->
+                    <div id="objectifsSepares" style="display: none;">
+                        <div class="objectifs-container">
+                            <div class="form-card">
+                                <div class="card-header">
+                                    <span class="card-icon">👤</span>
+                                    <h3>Objectifs - Contact 1</h3>
+                                </div>
+                                <div class="card-content">
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="objectifsContact1" value="Constitution d'un patrimoine">
+                                            <span class="checkmark"></span>
+                                            Constitution d'un patrimoine
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="objectifsContact1" value="Préparation de la retraite">
+                                            <span class="checkmark"></span>
+                                            Préparation de la retraite
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="objectifsContact1" value="Optimisation fiscale">
+                                            <span class="checkmark"></span>
+                                            Optimisation fiscale
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="objectifsContact1" value="Transmission du patrimoine">
+                                            <span class="checkmark"></span>
+                                            Transmission du patrimoine
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="objectifsContact1" value="Diversification des investissements">
+                                            <span class="checkmark"></span>
+                                            Diversification des investissements
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="objectifsContact1" value="Protection du conjoint/famille">
+                                            <span class="checkmark"></span>
+                                            Protection du conjoint/famille
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="objectifsContact1" value="Financement des études">
+                                            <span class="checkmark"></span>
+                                            Financement des études
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="objectifsContact1" value="Investissement locatif">
+                                            <span class="checkmark"></span>
+                                            Investissement locatif
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-card">
+                                <div class="card-header">
+                                    <span class="card-icon">👤</span>
+                                    <h3>Objectifs - Contact 2</h3>
+                                </div>
+                                <div class="card-content">
+                                    <div class="checkbox-group">
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="objectifsContact2" value="Constitution d'un patrimoine">
+                                            <span class="checkmark"></span>
+                                            Constitution d'un patrimoine
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="objectifsContact2" value="Préparation de la retraite">
+                                            <span class="checkmark"></span>
+                                            Préparation de la retraite
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="objectifsContact2" value="Optimisation fiscale">
+                                            <span class="checkmark"></span>
+                                            Optimisation fiscale
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="objectifsContact2" value="Transmission du patrimoine">
+                                            <span class="checkmark"></span>
+                                            Transmission du patrimoine
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="objectifsContact2" value="Diversification des investissements">
+                                            <span class="checkmark"></span>
+                                            Diversification des investissements
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="objectifsContact2" value="Protection du conjoint/famille">
+                                            <span class="checkmark"></span>
+                                            Protection du conjoint/famille
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="objectifsContact2" value="Financement des études">
+                                            <span class="checkmark"></span>
+                                            Financement des études
+                                        </label>
+                                        <label class="checkbox-item">
+                                            <input type="checkbox" name="objectifsContact2" value="Investissement locatif">
+                                            <span class="checkmark"></span>
+                                            Investissement locatif
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Biens immobiliers -->
-                <div class="form-section">
-                    <div class="section-title">Biens immobiliers et dispositifs</div>
-                    <div id="biensContainer">
-                        <!-- Les biens seront ajoutés dynamiquement -->
-                    </div>
-                    <button type="button" id="ajouterBien" class="add-btn">+ Ajouter un bien immobilier</button>
                 </div>
 
                 <!-- Type de demande -->
@@ -344,9 +452,21 @@
                     </div>
                 </div>
 
+                <!-- Précisions sur la demande -->
+                <div class="form-section">
+                    <div class="section-title">Précisions sur la demande</div>
+                    <div class="form-card">
+                        <div class="card-content">
+                            <div class="form-group">
+                                <label for="precisionsDemande">Détails et précisions sur la demande globale</label>
+                                <textarea id="precisionsDemande" name="precisionsDemande" rows="6" placeholder="Décrivez en détail la demande, le contexte, les éléments spécifiques à prendre en compte, les contraintes particulières, etc."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Documents obligatoires -->
                 <div class="form-section">
-                    <div class="section-title">Documents obligatoires</div>
                     <div class="document-fields">
                         <div class="document-field">
                             <label>Fiche de renseignement <span class="required">*</span></label>
@@ -361,21 +481,6 @@
                             <div class="file-help-text">Fiche client complète avec informations personnelles et financières</div>
                             <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
                             <div id="ficheRenseignement_list" class="file-list hidden"></div>
-                        </div>
-
-                        <div class="document-field">
-                            <label>CNI recto/verso + livret de famille <span class="required">*</span></label>
-                            <div class="file-upload">
-                                <span class="file-upload-icon">📎</span>
-                                <div class="file-upload-text">
-                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                                </div>
-                                <span class="file-upload-btn">Parcourir</span>
-                                <input type="file" id="cniLivret" name="cniLivret" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            </div>
-                            <div class="file-help-text">Pour chaque contact, CNI recto et verso + livret de famille si applicable</div>
-                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
-                            <div id="cniLivret_list" class="file-list hidden"></div>
                         </div>
 
                         <div class="document-field">
@@ -445,6 +550,21 @@
                     <div class="section-title">Documents complémentaires (selon situation)</div>
                     <div class="document-fields">
                         <div class="document-field">
+                            <label>CNI recto/verso + livret de famille</label>
+                            <div class="file-upload">
+                                <span class="file-upload-icon">📎</span>
+                                <div class="file-upload-text">
+                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
+                                </div>
+                                <span class="file-upload-btn">Parcourir</span>
+                                <input type="file" id="cniLivret" name="cniLivret" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-help-text">Pour chaque contact, CNI recto et verso + livret de famille si applicable</div>
+                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
+                            <div id="cniLivret_list" class="file-list hidden"></div>
+                        </div>
+
+                        <div class="document-field">
                             <label>Tableau d'amortissement + offre de prêt</label>
                             <div class="file-upload">
                                 <span class="file-upload-icon">📎</span>
@@ -480,30 +600,28 @@
                     Veuillez remplir tous les champs obligatoires et joindre les documents requis avant de pouvoir envoyer la demande.
                 </div>
 
-                <button type="submit" class="submit-btn" id="submitBtn">Envoyer la demande</button>
+                <button type="submit" class="submit-btn" id="submitBtn">Envoyer la demande d'ingénierie</button>
             </form>
         </div>
     </div>
 
     <script>
         var uploadedDocuments = {};
-        var bienCounter = 0;
-        var requiredDocuments = ['ficheRenseignement', 'cniLivret', 'avisImposition', 'bulletinsSalaire', 'infosRetraite', 'relevesPlacement'];
+        var requiredDocuments = ['ficheRenseignement', 'avisImposition', 'bulletinsSalaire', 'infosRetraite', 'relevesPlacement'];
 
         document.addEventListener('DOMContentLoaded', function() {
             var today = new Date().toISOString().split('T')[0];
             document.getElementById('dateDemande').value = today;
-            setupFormEvents();
-            setupFileEvents();
-            setupBienImmobilier();
+            
+            initializeFormEvents();
+            initializeFileEvents();
             updateSubmitButton();
         });
 
-        function setupFormEvents() {
+        function initializeFormEvents() {
             var situationFamiliale = document.getElementById('situationFamiliale');
-            var regimeGroup = document.getElementById('regimeGroup');
-            
             situationFamiliale.addEventListener('change', function() {
+                var regimeGroup = document.getElementById('regimeGroup');
                 if (this.value === 'Marié' || this.value === 'Pacsé') {
                     regimeGroup.style.display = 'block';
                 } else {
@@ -512,9 +630,26 @@
                 }
             });
 
+            var objectifsCommunsCheckbox = document.getElementById('objectifsCommunsCheckbox');
+            objectifsCommunsCheckbox.addEventListener('change', function() {
+                var objectifsCommuns = document.getElementById('objectifsCommuns');
+                var objectifsSepares = document.getElementById('objectifsSepares');
+                
+                if (this.checked) {
+                    objectifsCommuns.style.display = 'block';
+                    objectifsSepares.style.display = 'none';
+                    clearCheckboxes('objectifsContact1');
+                    clearCheckboxes('objectifsContact2');
+                } else {
+                    objectifsCommuns.style.display = 'none';
+                    objectifsSepares.style.display = 'block';
+                    clearCheckboxes('objectifs');
+                }
+                updateSubmitButton();
+            });
+
             var autreCheckbox = document.getElementById('autreDemandeCheckbox');
             var autrePrecision = document.getElementById('autreDemandePrecision');
-            
             autreCheckbox.addEventListener('change', function() {
                 if (this.checked) {
                     autrePrecision.style.display = 'block';
@@ -536,113 +671,14 @@
             form.addEventListener('submit', handleFormSubmit);
         }
 
-        function setupBienImmobilier() {
-            var ajouterBienBtn = document.getElementById('ajouterBien');
-            ajouterBienBtn.addEventListener('click', ajouterBienImmobilier);
-        }
-
-        function ajouterBienImmobilier() {
-            bienCounter++;
-            var biensContainer = document.getElementById('biensContainer');
-            
-            var bienDiv = document.createElement('div');
-            bienDiv.className = 'bien-card';
-            bienDiv.id = 'bien_' + bienCounter;
-            
-            bienDiv.innerHTML = '<div class="card-header">' +
-                '<span class="card-icon">🏠</span>' +
-                '<h3>Bien immobilier ' + bienCounter + '</h3>' +
-                '<button type="button" class="remove-btn" onclick="supprimerBien(' + bienCounter + ')">×</button>' +
-                '</div>' +
-                '<div class="card-content">' +
-                '<div class="form-group">' +
-                '<label for="typeBien_' + bienCounter + '">Type de bien</label>' +
-                '<select id="typeBien_' + bienCounter + '" name="typeBien_' + bienCounter + '">' +
-                '<option value="">Sélectionner...</option>' +
-                '<option value="Appartement">Appartement</option>' +
-                '<option value="Maison">Maison</option>' +
-                '<option value="Terrain">Terrain</option>' +
-                '<option value="Local commercial">Local commercial</option>' +
-                '<option value="Parking/Garage">Parking/Garage</option>' +
-                '</select>' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<label for="villeBien_' + bienCounter + '">Ville</label>' +
-                '<input type="text" id="villeBien_' + bienCounter + '" name="villeBien_' + bienCounter + '">' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<label for="proprietaireBien_' + bienCounter + '">Propriétaire</label>' +
-                '<select id="proprietaireBien_' + bienCounter + '" name="proprietaireBien_' + bienCounter + '">' +
-                '<option value="">Sélectionner...</option>' +
-                '<option value="Contact 1">Contact 1</option>' +
-                '<option value="Contact 2">Contact 2</option>' +
-                '<option value="Les deux">Les deux</option>' +
-                '</select>' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<label for="creditBien_' + bienCounter + '">Crédit en cours</label>' +
-                '<select id="creditBien_' + bienCounter + '" name="creditBien_' + bienCounter + '">' +
-                '<option value="">Sélectionner...</option>' +
-                '<option value="Non">Non</option>' +
-                '</select>' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<label for="dispositifFiscal_' + bienCounter + '">Dispositif fiscal</label>' +
-                '<select id="dispositifFiscal_' + bienCounter + '" name="dispositifFiscal_' + bienCounter + '">' +
-                '<option value="">Sélectionner...</option>' +
-                '<option value="Oui">Oui</option>' +
-                '<option value="Non">Non</option>' +
-                '</select>' +
-                '</div>' +
-                '<div class="form-group" id="dispositifDetail_' + bienCounter + '" style="display: none;">' +
-                '<label for="dispositifType_' + bienCounter + '">Type de dispositif</label>' +
-                '<select id="dispositifType_' + bienCounter + '" name="dispositifType_' + bienCounter + '">' +
-                '<option value="">Sélectionner...</option>' +
-                '<option value="Pinel">Pinel</option>' +
-                '<option value="Malraux">Malraux</option>' +
-                '<option value="Denormandie">Denormandie</option>' +
-                '<option value="LMNP">LMNP</option>' +
-                '<option value="Déficit foncier">Déficit foncier</option>' +
-                '<option value="Autre">Autre</option>' +
-                '</select>' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<label for="dateSignature_' + bienCounter + '">Date de signature</label>' +
-                '<input type="date" id="dateSignature_' + bienCounter + '" name="dateSignature_' + bienCounter + '">' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<label for="dateAchevement_' + bienCounter + '">Date d\'achèvement</label>' +
-                '<input type="date" id="dateAchevement_' + bienCounter + '" name="dateAchevement_' + bienCounter + '">' +
-                '</div>' +
-                '<div class="form-group">' +
-                '<label for="prixRevient_' + bienCounter + '">Prix de revient (€)</label>' +
-                '<input type="number" id="prixRevient_' + bienCounter + '" name="prixRevient_' + bienCounter + '" min="0" step="0.01">' +
-                '</div>' +
-                '</div>';
-            
-            biensContainer.appendChild(bienDiv);
-            
-            var dispositifSelect = document.getElementById('dispositifFiscal_' + bienCounter);
-            var dispositifDetail = document.getElementById('dispositifDetail_' + bienCounter);
-            
-            dispositifSelect.addEventListener('change', function() {
-                if (this.value === 'Oui') {
-                    dispositifDetail.style.display = 'block';
-                } else {
-                    dispositifDetail.style.display = 'none';
-                    document.getElementById('dispositifType_' + bienCounter).value = '';
-                }
-            });
-        }
-
-        function supprimerBien(id) {
-            var bienCard = document.getElementById('bien_' + id);
-            if (bienCard) {
-                bienCard.remove();
+        function clearCheckboxes(name) {
+            var checkboxes = document.querySelectorAll('input[name="' + name + '"]');
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = false;
             }
         }
 
-        function setupFileEvents() {
+        function initializeFileEvents() {
             var fileInputs = document.querySelectorAll('input[type="file"]');
             for (var i = 0; i < fileInputs.length; i++) {
                 fileInputs[i].addEventListener('change', function() {
@@ -652,26 +688,30 @@
 
             var fileUploads = document.querySelectorAll('.file-upload');
             for (var i = 0; i < fileUploads.length; i++) {
-                fileUploads[i].addEventListener('dragover', function(e) {
-                    e.preventDefault();
-                    this.classList.add('dragover');
-                });
-
-                fileUploads[i].addEventListener('dragleave', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('dragover');
-                });
-
-                fileUploads[i].addEventListener('drop', function(e) {
-                    e.preventDefault();
-                    this.classList.remove('dragover');
-                    var input = this.querySelector('input[type="file"]');
-                    if (input && e.dataTransfer.files.length > 0) {
-                        input.files = e.dataTransfer.files;
-                        handleDocumentUpload(input.id);
-                    }
-                });
+                setupDragDrop(fileUploads[i]);
             }
+        }
+
+        function setupDragDrop(upload) {
+            upload.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+
+            upload.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+
+            upload.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                var input = this.querySelector('input[type="file"]');
+                if (input && e.dataTransfer.files.length > 0) {
+                    input.files = e.dataTransfer.files;
+                    handleDocumentUpload(input.id);
+                }
+            });
         }
 
         function handleDocumentUpload(inputId) {
@@ -685,6 +725,7 @@
                 for (var i = 0; i < input.files.length; i++) {
                     var file = input.files[i];
                     var exists = false;
+                    
                     for (var j = 0; j < uploadedDocuments[inputId].length; j++) {
                         if (uploadedDocuments[inputId][j].name === file.name && uploadedDocuments[inputId][j].size === file.size) {
                             exists = true;
@@ -699,7 +740,6 @@
                         });
                     }
                 }
-
                 updateFileList(inputId);
             }
 
@@ -722,14 +762,16 @@
                     
                     var fileSize = formatFileSize(fileData.file.size);
                     
-                    fileItem.innerHTML = '<div class="file-item-info">' +
-                        '<span class="file-item-icon">📄</span>' +
-                        '<div>' +
-                        '<div class="file-item-name">' + fileData.file.name + '</div>' +
-                        '<div class="file-item-size">' + fileSize + '</div>' +
-                        '</div>' +
+                    fileItem.innerHTML = 
+                        '<div class="file-item-info">' +
+                            '<span class="file-item-icon">📄</span>' +
+                            '<div>' +
+                                '<div class="file-item-name">' + fileData.file.name + '</div>' +
+                                '<div class="file-item-size">' + fileSize + '</div>' +
+                            '</div>' +
                         '</div>' +
                         '<button type="button" class="file-item-remove" onclick="removeDocumentFile(\'' + inputId + '\', ' + i + ')">Supprimer</button>';
+                    
                     fileList.appendChild(fileItem);
                 }
 
@@ -771,31 +813,10 @@
             var submitBtn = document.getElementById('submitBtn');
             var validationMessage = document.getElementById('validationMessage');
             
-            var form = document.getElementById('ingenierieForm');
-            var requiredInputs = form.querySelectorAll('input[required], select[required]');
-            var allFieldsValid = true;
-            
-            for (var i = 0; i < requiredInputs.length; i++) {
-                if (!requiredInputs[i].value.trim()) {
-                    allFieldsValid = false;
-                    break;
-                }
-            }
-
-            var allDocumentsUploaded = true;
-            for (var i = 0; i < requiredDocuments.length; i++) {
-                var docId = requiredDocuments[i];
-                if (!uploadedDocuments[docId] || uploadedDocuments[docId].length === 0) {
-                    allDocumentsUploaded = false;
-                    break;
-                }
-            }
-
-            var objectifsChecked = document.querySelectorAll('input[name="objectifs"]:checked');
-            var hasObjectifs = objectifsChecked.length > 0;
-
-            var typeDemandeChecked = document.querySelectorAll('input[name="typeDemande"]:checked');
-            var hasTypeDemande = typeDemandeChecked.length > 0;
+            var allFieldsValid = checkRequiredFields();
+            var allDocumentsUploaded = checkRequiredDocuments();
+            var hasObjectifs = checkObjectifs();
+            var hasTypeDemande = checkTypeDemande();
 
             if (allFieldsValid && allDocumentsUploaded && hasObjectifs && hasTypeDemande) {
                 submitBtn.disabled = false;
@@ -804,6 +825,46 @@
                 submitBtn.disabled = true;
                 validationMessage.classList.add('show');
             }
+        }
+
+        function checkRequiredFields() {
+            var form = document.getElementById('ingenierieForm');
+            var requiredInputs = form.querySelectorAll('input[required], select[required]');
+            
+            for (var i = 0; i < requiredInputs.length; i++) {
+                if (!requiredInputs[i].value.trim()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function checkRequiredDocuments() {
+            for (var i = 0; i < requiredDocuments.length; i++) {
+                var docId = requiredDocuments[i];
+                if (!uploadedDocuments[docId] || uploadedDocuments[docId].length === 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function checkObjectifs() {
+            var objectifsCommunsCheckbox = document.getElementById('objectifsCommunsCheckbox');
+            
+            if (objectifsCommunsCheckbox.checked) {
+                var objectifsCommuns = document.querySelectorAll('input[name="objectifs"]:checked');
+                return objectifsCommuns.length > 0;
+            } else {
+                var objectifsContact1 = document.querySelectorAll('input[name="objectifsContact1"]:checked');
+                var objectifsContact2 = document.querySelectorAll('input[name="objectifsContact2"]:checked');
+                return objectifsContact1.length > 0 || objectifsContact2.length > 0;
+            }
+        }
+
+        function checkTypeDemande() {
+            var typeDemandeChecked = document.querySelectorAll('input[name="typeDemande"]:checked');
+            return typeDemandeChecked.length > 0;
         }
 
         function handleFormSubmit(e) {
@@ -818,12 +879,32 @@
                 }
             }
 
-            var objectifs = [];
-            var objectifsInputs = document.querySelectorAll('input[name="objectifs"]:checked');
-            for (var i = 0; i < objectifsInputs.length; i++) {
-                objectifs.push(objectifsInputs[i].value);
+            var objectifsCommunsCheckbox = document.getElementById('objectifsCommunsCheckbox');
+            if (objectifsCommunsCheckbox.checked) {
+                var objectifs = [];
+                var objectifsInputs = document.querySelectorAll('input[name="objectifs"]:checked');
+                for (var i = 0; i < objectifsInputs.length; i++) {
+                    objectifs.push(objectifsInputs[i].value);
+                }
+                formData.append('objectifs_selected', JSON.stringify(objectifs));
+                formData.append('objectifs_communs', 'true');
+            } else {
+                var objectifsContact1 = [];
+                var objectifs1Inputs = document.querySelectorAll('input[name="objectifsContact1"]:checked');
+                for (var i = 0; i < objectifs1Inputs.length; i++) {
+                    objectifsContact1.push(objectifs1Inputs[i].value);
+                }
+                
+                var objectifsContact2 = [];
+                var objectifs2Inputs = document.querySelectorAll('input[name="objectifsContact2"]:checked');
+                for (var i = 0; i < objectifs2Inputs.length; i++) {
+                    objectifsContact2.push(objectifs2Inputs[i].value);
+                }
+                
+                formData.append('objectifs_contact1', JSON.stringify(objectifsContact1));
+                formData.append('objectifs_contact2', JSON.stringify(objectifsContact2));
+                formData.append('objectifs_communs', 'false');
             }
-            formData.append('objectifs_selected', JSON.stringify(objectifs));
 
             var typesDemande = [];
             var typesInputs = document.querySelectorAll('input[name="typeDemande"]:checked');
@@ -832,59 +913,39 @@
             }
             formData.append('types_demande_selected', JSON.stringify(typesDemande));
 
-            var biens = [];
-            var bienCards = document.querySelectorAll('.bien-card');
-            for (var i = 0; i < bienCards.length; i++) {
-                var card = bienCards[i];
-                var id = card.id.split('_')[1];
-                var bien = {
-                    type: getValue('typeBien_' + id),
-                    ville: getValue('villeBien_' + id),
-                    proprietaire: getValue('proprietaireBien_' + id),
-                    credit: getValue('creditBien_' + id),
-                    dispositifFiscal: getValue('dispositifFiscal_' + id),
-                    dispositifType: getValue('dispositifType_' + id),
-                    dateSignature: getValue('dateSignature_' + id),
-                    dateAchevement: getValue('dateAchevement_' + id),
-                    prixRevient: getValue('prixRevient_' + id)
-                };
-                biens.push(bien);
-            }
-            formData.append('biens_immobiliers', JSON.stringify(biens));
-
             var submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
             submitBtn.textContent = 'Envoi en cours...';
 
             setTimeout(function() {
                 alert('Demande d\'ingénierie envoyée avec succès !');
-                
-                document.getElementById('ingenierieForm').reset();
-                uploadedDocuments = {};
-                document.getElementById('biensContainer').innerHTML = '';
-                bienCounter = 0;
-                
-                var today = new Date().toISOString().split('T')[0];
-                document.getElementById('dateDemande').value = today;
-                
-                document.getElementById('regimeGroup').style.display = 'none';
-                document.getElementById('autreDemandePrecision').style.display = 'none';
-                
-                var fileLists = document.querySelectorAll('.file-list');
-                for (var i = 0; i < fileLists.length; i++) {
-                    fileLists[i].classList.add('hidden');
-                    fileLists[i].innerHTML = '';
-                }
-                
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Envoyer la demande d\'ingénierie';
-                updateSubmitButton();
+                resetForm();
             }, 2000);
         }
 
-        function getValue(elementId) {
-            var element = document.getElementById(elementId);
-            return element ? element.value : '';
+        function resetForm() {
+            document.getElementById('ingenierieForm').reset();
+            uploadedDocuments = {};
+            
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById('dateDemande').value = today;
+            
+            document.getElementById('regimeGroup').style.display = 'none';
+            document.getElementById('autreDemandePrecision').style.display = 'none';
+            document.getElementById('objectifsCommuns').style.display = 'block';
+            document.getElementById('objectifsSepares').style.display = 'none';
+            document.getElementById('objectifsCommunsCheckbox').checked = true;
+            
+            var fileLists = document.querySelectorAll('.file-list');
+            for (var i = 0; i < fileLists.length; i++) {
+                fileLists[i].classList.add('hidden');
+                fileLists[i].innerHTML = '';
+            }
+            
+            var submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Envoyer la demande d\'ingénierie';
+            updateSubmitButton();
         }
     </script>
 </body>
