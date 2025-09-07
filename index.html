@@ -478,6 +478,33 @@
                     </div>
                 </div>
 
+                <!-- Options d'envoi -->
+                <div class="form-section">
+                    <div class="section-title">Options d'envoi</div>
+                    <div class="zeendoc-option-section">
+                        <label class="checkbox-item zeendoc-option-checkbox">
+                            <input type="checkbox" id="envoyerVersZeendocCheckbox" name="envoyerVersZeendoc" checked>
+                            <span class="checkmark"></span>
+                            <strong>📁 Envoyer automatiquement les documents vers ZeenDoc</strong>
+                        </label>
+                        <p class="help-text">Si cette case est décochée, seul l'email principal sera envoyé (sans les pièces jointes vers ZeenDoc).</p>
+                        
+                        <div id="zeendocWorkflowDetails">
+                            <div class="auto-info" style="margin-top: 15px;">
+                                <span class="auto-badge">⚡ ZeenDoc + Email Principal</span>
+                                <small>Envoi automatique complet activé</small>
+                            </div>
+                        </div>
+
+                        <div id="emailSeulDetails" style="display: none;">
+                            <div class="warning-info" style="margin-top: 15px;">
+                                <span class="warning-badge">⚠️ Email Principal Uniquement</span>
+                                <small>ZeenDoc désactivé - Envoi manuel requis pour les documents</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Documents obligatoires -->
                 <div class="form-section">
                     <div class="section-title">Documents obligatoires</div>
@@ -494,72 +521,23 @@
                                 <input type="file" id="ficheRenseignement" name="ficheRenseignement" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
                             </div>
                             <div class="file-help-text">Fiche client complète avec informations personnelles et financières</div>
-                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
-                            <div id="ficheRenseignement_list" class="file-list hidden"></div>
-                        </div>
-
-                        <div class="document-field zeendoc-field">
-                            <label>Dernier avis d'imposition <span class="required">*</span></label>
-                            <div class="file-upload">
-                                <span class="file-upload-icon">📎</span>
-                                <div class="file-upload-text">
-                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
-                                </div>
-                                <span class="file-upload-btn">Parcourir</span>
-                                <input type="file" id="avisImposition" name="avisImposition" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            </div>
-                            <div class="file-help-text">Pour chaque contact si pas d'imposition commune</div>
-                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
-                            <div id="avisImposition_list" class="file-list hidden"></div>
-                        </div>
-
-                        <div class="document-field zeendoc-field">
-                            <label>Bulletins de salaire <span class="required">*</span></label>
-                            <div class="file-upload">
-                                <span class="file-upload-icon">📎</span>
-                                <div class="file-upload-text">
-                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
-                                </div>
-                                <span class="file-upload-btn">Parcourir</span>
-                                <input type="file" id="bulletinsSalaire" name="bulletinsSalaire" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            </div>
-                            <div class="file-help-text">Dernier bulletin + bulletin décembre N-1 pour chaque contact</div>
-                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
-                            <div id="bulletinsSalaire_list" class="file-list hidden"></div>
-                        </div>
-
-                        <div class="document-field zeendoc-field">
-                            <label>Infos retraite - estimation du montant <span class="required">*</span></label>
-                            <div class="file-upload">
-                                <span class="file-upload-icon">📎</span>
-                                <div class="file-upload-text">
-                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
-                                </div>
-                                <span class="file-upload-btn">Parcourir</span>
-                                <input type="file" id="infosRetraite" name="infosRetraite" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            </div>
-                            <div class="file-help-text">Relevé de situation individuelle, estimation retraite, etc.</div>
-                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
-                            <div id="infosRetraite_list" class="file-list hidden"></div>
-                        </div>
-
-                        <div class="document-field zeendoc-field">
-                            <label>Derniers relevés de placement financier <span class="required">*</span></label>
-                            <div class="file-upload">
-                                <span class="file-upload-icon">📎</span>
-                                <div class="file-upload-text">
-                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
-                                </div>
-                                <span class="file-upload-btn">Parcourir</span>
-                                <input type="file" id="relevesPlacement" name="relevesPlacement" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            </div>
-                            <div class="file-help-text">Avec dates pour assurance vie, PEA, comptes titres, etc.</div>
-                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
                             <div id="relevesPlacement_list" class="file-list hidden"></div>
+                        </div>
+
+                        <div class="document-field zeendoc-field">
+                            <label>Profil risques <span class="required">*</span></label>
+                            <div class="file-upload">
+                                <span class="file-upload-icon">📎</span>
+                                <div class="file-upload-text">
+                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
+                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
+                                </div>
+                                <span class="file-upload-btn">Parcourir</span>
+                                <input type="file" id="profilRisques" name="profilRisques" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-help-text">Document d'évaluation du profil de risque de l'investisseur</div>
+                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
+                            <div id="profilRisques_list" class="file-list hidden"></div>
                         </div>
                     </div>
                 </div>
@@ -622,14 +600,10 @@
                         <ol>
                             <li><strong>Email Principal:</strong> Envoyé avec archive ZIP si fichiers volumineux</li>
                             <li><strong>ZeenDoc:</strong> Fichiers originaux envoyés (emails multiples si nécessaire)</li>
-                            <li><strong>Nommage:</strong> Format ZeenDoc ingénierie avec conseiller et secteur</li>
+                            <li><strong>Nommage:</strong> Format ZeenDoc ingénierie avec conseiller</li>
                             <li><strong>Classement:</strong> Documents triés par catégorie spécialisée</li>
                             <li><strong>Suivi:</strong> Copies de confirmation envoyées automatiquement</li>
                         </ol>
-                        <div class="auto-info">
-                            <span class="auto-badge">⚡ Envoi 100% automatique</span>
-                            <small>Plus besoin d'ouvrir votre client mail !</small>
-                        </div>
                     </div>
                 </div>
 
@@ -644,7 +618,7 @@
 
     <script>
         var uploadedDocuments = {};
-        var requiredDocuments = ['ficheRenseignement', 'avisImposition', 'bulletinsSalaire', 'infosRetraite', 'relevesPlacement'];
+        var requiredDocuments = ['ficheRenseignement', 'avisImposition', 'bulletinsSalaire', 'infosRetraite', 'relevesPlacement', 'profilRisques'];
 
         document.addEventListener('DOMContentLoaded', function() {
             var today = new Date().toISOString().split('T')[0];
@@ -681,6 +655,22 @@
                     objectifsCommuns.style.display = 'none';
                     objectifsSepares.style.display = 'block';
                     clearCheckboxes('objectifs');
+                }
+                updateSubmitButton();
+            });
+
+            // Gestion de l'envoi vers ZeenDoc
+            var envoyerVersZeendocCheckbox = document.getElementById('envoyerVersZeendocCheckbox');
+            envoyerVersZeendocCheckbox.addEventListener('change', function() {
+                var zeendocWorkflowDetails = document.getElementById('zeendocWorkflowDetails');
+                var emailSeulDetails = document.getElementById('emailSeulDetails');
+                
+                if (this.checked) {
+                    zeendocWorkflowDetails.style.display = 'block';
+                    emailSeulDetails.style.display = 'none';
+                } else {
+                    zeendocWorkflowDetails.style.display = 'none';
+                    emailSeulDetails.style.display = 'block';
                 }
                 updateSubmitButton();
             });
@@ -911,6 +901,13 @@
         }
 
         function checkRequiredDocuments() {
+            // Si ZeenDoc n'est pas activé, on n'exige pas les documents
+            var envoyerVersZeendocCheckbox = document.getElementById('envoyerVersZeendocCheckbox');
+            if (!envoyerVersZeendocCheckbox.checked) {
+                return true; // Pas de documents requis si pas d'envoi vers ZeenDoc
+            }
+            
+            // Sinon, vérifier que tous les documents obligatoires sont présents
             for (var i = 0; i < requiredDocuments.length; i++) {
                 var docId = requiredDocuments[i];
                 if (!uploadedDocuments[docId] || uploadedDocuments[docId].length === 0) {
@@ -943,7 +940,11 @@
             
             var formData = new FormData(e.target);
             
-            // Ajouter tous les fichiers uploadés
+            // Ajouter le flag d'envoi vers ZeenDoc
+            var envoyerVersZeendocCheckbox = document.getElementById('envoyerVersZeendocCheckbox');
+            formData.append('envoyerVersZeendoc', envoyerVersZeendocCheckbox.checked ? 'true' : 'false');
+
+            // Ajouter tous les fichiers uploadés (même si ZeenDoc désactivé, pour l'email principal)
             for (var docId in uploadedDocuments) {
                 var files = uploadedDocuments[docId];
                 for (var i = 0; i < files.length; i++) {
@@ -1017,20 +1018,24 @@
                             message += '📧 Email principal: ✅ Envoyé\n';
                         }
                         
-                        // Emails ZeenDoc
-                        if (data.details_envoi.total_emails_zeendoc > 0) {
-                            if (data.details_envoi.total_emails_zeendoc > 1) {
-                                message += '📁 ZeenDoc: ' + data.details_envoi.total_emails_zeendoc + ' emails envoyés (fichiers volumineux)\n';
-                                data.details_envoi.zeendoc_parties.forEach(partie => {
-                                    const status = partie.succes ? '✅' : '❌';
-                                    message += '   └─ Partie ' + partie.partie + ': ' + status + ' ' + partie.fichiers_count + ' fichier(s)\n';
-                                });
-                            } else {
-                                message += '📁 ZeenDoc: ✅ Email envoyé\n';
+                        // Emails ZeenDoc (seulement si activé)
+                        if (data.details_envoi.zeendoc_active) {
+                            if (data.details_envoi.total_emails_zeendoc > 0) {
+                                if (data.details_envoi.total_emails_zeendoc > 1) {
+                                    message += '📁 ZeenDoc: ' + data.details_envoi.total_emails_zeendoc + ' emails envoyés (fichiers volumineux)\n';
+                                    data.details_envoi.zeendoc_parties.forEach(partie => {
+                                        const status = partie.succes ? '✅' : '❌';
+                                        message += '   └─ Partie ' + partie.partie + ': ' + status + ' ' + partie.fichiers_count + ' fichier(s)\n';
+                                    });
+                                } else {
+                                    message += '📁 ZeenDoc: ✅ Email envoyé\n';
+                                }
                             }
+                        } else {
+                            message += '📁 ZeenDoc: ⏭️ Envoi désactivé (choix utilisateur)\n';
                         }
                         
-                        message += '\n🎉 Tous les destinataires ont été notifiés automatiquement !';
+                        message += '\n🎉 Tous les envois demandés ont été effectués automatiquement !';
                         
                     } else {
                         message += '❌ Erreur lors de l\'envoi automatique.\n';
@@ -1069,6 +1074,9 @@
             document.getElementById('objectifsCommuns').style.display = 'block';
             document.getElementById('objectifsSepares').style.display = 'none';
             document.getElementById('objectifsCommunsCheckbox').checked = true;
+            document.getElementById('envoyerVersZeendocCheckbox').checked = true;
+            document.getElementById('zeendocWorkflowDetails').style.display = 'block';
+            document.getElementById('emailSeulDetails').style.display = 'none';
             
             var fileLists = document.querySelectorAll('.file-list');
             for (var i = 0; i < fileLists.length; i++) {
@@ -1084,3 +1092,67 @@
     </script>
 </body>
 </html>
+                            <div id="ficheRenseignement_list" class="file-list hidden"></div>
+                        </div>
+
+                        <div class="document-field zeendoc-field">
+                            <label>Dernier avis d'imposition <span class="required">*</span></label>
+                            <div class="file-upload">
+                                <span class="file-upload-icon">📎</span>
+                                <div class="file-upload-text">
+                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
+                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
+                                </div>
+                                <span class="file-upload-btn">Parcourir</span>
+                                <input type="file" id="avisImposition" name="avisImposition" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-help-text">Pour chaque contact si pas d'imposition commune</div>
+                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
+                            <div id="avisImposition_list" class="file-list hidden"></div>
+                        </div>
+
+                        <div class="document-field zeendoc-field">
+                            <label>Bulletins de salaire <span class="required">*</span></label>
+                            <div class="file-upload">
+                                <span class="file-upload-icon">📎</span>
+                                <div class="file-upload-text">
+                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
+                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
+                                </div>
+                                <span class="file-upload-btn">Parcourir</span>
+                                <input type="file" id="bulletinsSalaire" name="bulletinsSalaire" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-help-text">Dernier bulletin + bulletin décembre N-1 pour chaque contact</div>
+                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
+                            <div id="bulletinsSalaire_list" class="file-list hidden"></div>
+                        </div>
+
+                        <div class="document-field zeendoc-field">
+                            <label>Infos retraite - estimation du montant <span class="required">*</span></label>
+                            <div class="file-upload">
+                                <span class="file-upload-icon">📎</span>
+                                <div class="file-upload-text">
+                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
+                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
+                                </div>
+                                <span class="file-upload-btn">Parcourir</span>
+                                <input type="file" id="infosRetraite" name="infosRetraite" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-help-text">Relevé de situation individuelle, estimation retraite, etc.</div>
+                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
+                            <div id="infosRetraite_list" class="file-list hidden"></div>
+                        </div>
+
+                        <div class="document-field zeendoc-field">
+                            <label>Derniers relevés de placement financier <span class="required">*</span></label>
+                            <div class="file-upload">
+                                <span class="file-upload-icon">📎</span>
+                                <div class="file-upload-text">
+                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
+                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
+                                </div>
+                                <span class="file-upload-btn">Parcourir</span>
+                                <input type="file" id="relevesPlacement" name="relevesPlacement" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-help-text">Avec dates pour assurance vie, PEA, comptes titres, etc.</div>
+                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
