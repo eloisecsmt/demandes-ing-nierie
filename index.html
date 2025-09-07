@@ -505,7 +505,7 @@
                     </div>
                 </div>
 
-                <!-- Documents obligatoires -->
+                <!-- Documents obligatoires (SECTION CORRIGÉE) -->
                 <div class="form-section">
                     <div class="section-title">Documents obligatoires</div>
                     <div class="document-fields">
@@ -521,6 +521,71 @@
                                 <input type="file" id="ficheRenseignement" name="ficheRenseignement" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
                             </div>
                             <div class="file-help-text">Fiche client complète avec informations personnelles et financières</div>
+                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
+                            <div id="ficheRenseignement_list" class="file-list hidden"></div>
+                        </div>
+
+                        <div class="document-field zeendoc-field">
+                            <label>Dernier avis d'imposition <span class="required">*</span></label>
+                            <div class="file-upload">
+                                <span class="file-upload-icon">📎</span>
+                                <div class="file-upload-text">
+                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
+                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
+                                </div>
+                                <span class="file-upload-btn">Parcourir</span>
+                                <input type="file" id="avisImposition" name="avisImposition" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-help-text">Pour chaque contact si pas d'imposition commune</div>
+                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
+                            <div id="avisImposition_list" class="file-list hidden"></div>
+                        </div>
+
+                        <div class="document-field zeendoc-field">
+                            <label>Bulletins de salaire <span class="required">*</span></label>
+                            <div class="file-upload">
+                                <span class="file-upload-icon">📎</span>
+                                <div class="file-upload-text">
+                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
+                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
+                                </div>
+                                <span class="file-upload-btn">Parcourir</span>
+                                <input type="file" id="bulletinsSalaire" name="bulletinsSalaire" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-help-text">Dernier bulletin + bulletin décembre N-1 pour chaque contact</div>
+                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
+                            <div id="bulletinsSalaire_list" class="file-list hidden"></div>
+                        </div>
+
+                        <div class="document-field zeendoc-field">
+                            <label>Infos retraite - estimation du montant <span class="required">*</span></label>
+                            <div class="file-upload">
+                                <span class="file-upload-icon">📎</span>
+                                <div class="file-upload-text">
+                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
+                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
+                                </div>
+                                <span class="file-upload-btn">Parcourir</span>
+                                <input type="file" id="infosRetraite" name="infosRetraite" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-help-text">Relevé de situation individuelle, estimation retraite, etc.</div>
+                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
+                            <div id="infosRetraite_list" class="file-list hidden"></div>
+                        </div>
+
+                        <div class="document-field zeendoc-field">
+                            <label>Derniers relevés de placement financier <span class="required">*</span></label>
+                            <div class="file-upload">
+                                <span class="file-upload-icon">📎</span>
+                                <div class="file-upload-text">
+                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
+                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
+                                </div>
+                                <span class="file-upload-btn">Parcourir</span>
+                                <input type="file" id="relevesPlacement" name="relevesPlacement" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-help-text">Avec dates pour assurance vie, PEA, comptes titres, etc.</div>
+                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
                             <div id="relevesPlacement_list" class="file-list hidden"></div>
                         </div>
 
@@ -1092,67 +1157,3 @@
     </script>
 </body>
 </html>
-                            <div id="ficheRenseignement_list" class="file-list hidden"></div>
-                        </div>
-
-                        <div class="document-field zeendoc-field">
-                            <label>Dernier avis d'imposition <span class="required">*</span></label>
-                            <div class="file-upload">
-                                <span class="file-upload-icon">📎</span>
-                                <div class="file-upload-text">
-                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
-                                </div>
-                                <span class="file-upload-btn">Parcourir</span>
-                                <input type="file" id="avisImposition" name="avisImposition" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            </div>
-                            <div class="file-help-text">Pour chaque contact si pas d'imposition commune</div>
-                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
-                            <div id="avisImposition_list" class="file-list hidden"></div>
-                        </div>
-
-                        <div class="document-field zeendoc-field">
-                            <label>Bulletins de salaire <span class="required">*</span></label>
-                            <div class="file-upload">
-                                <span class="file-upload-icon">📎</span>
-                                <div class="file-upload-text">
-                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
-                                </div>
-                                <span class="file-upload-btn">Parcourir</span>
-                                <input type="file" id="bulletinsSalaire" name="bulletinsSalaire" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            </div>
-                            <div class="file-help-text">Dernier bulletin + bulletin décembre N-1 pour chaque contact</div>
-                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
-                            <div id="bulletinsSalaire_list" class="file-list hidden"></div>
-                        </div>
-
-                        <div class="document-field zeendoc-field">
-                            <label>Infos retraite - estimation du montant <span class="required">*</span></label>
-                            <div class="file-upload">
-                                <span class="file-upload-icon">📎</span>
-                                <div class="file-upload-text">
-                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
-                                </div>
-                                <span class="file-upload-btn">Parcourir</span>
-                                <input type="file" id="infosRetraite" name="infosRetraite" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            </div>
-                            <div class="file-help-text">Relevé de situation individuelle, estimation retraite, etc.</div>
-                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
-                            <div id="infosRetraite_list" class="file-list hidden"></div>
-                        </div>
-
-                        <div class="document-field zeendoc-field">
-                            <label>Derniers relevés de placement financier <span class="required">*</span></label>
-                            <div class="file-upload">
-                                <span class="file-upload-icon">📎</span>
-                                <div class="file-upload-text">
-                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
-                                </div>
-                                <span class="file-upload-btn">Parcourir</span>
-                                <input type="file" id="relevesPlacement" name="relevesPlacement" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            </div>
-                            <div class="file-help-text">Avec dates pour assurance vie, PEA, comptes titres, etc.</div>
-                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
