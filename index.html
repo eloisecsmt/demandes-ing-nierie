@@ -12,8 +12,8 @@
             <h1>Gestion des Demandes Ingénierie</h1>
             <p>Conseil patrimonial et analyse financière personnalisée</p>
             <div class="zeendoc-info">
-                <span class="zeendoc-badge">📁 Intégration ZeenDoc</span>
-                <small>Documents automatiquement envoyés vers votre dépôt ZeenDoc</small>
+                <span class="zeendoc-badge">📁 Intégration ZeenDoc Automatique</span>
+                <small>Documents automatiquement envoyés vers votre dépôt ZeenDoc + Email principal</small>
             </div>
         </div>
 
@@ -483,12 +483,114 @@
                     <div class="section-title">Documents obligatoires</div>
                     <div class="document-fields">
                         <div class="document-field zeendoc-field">
+                            <label>Fiche de renseignement <span class="required">*</span></label>
+                            <div class="file-upload">
+                                <span class="file-upload-icon">📎</span>
+                                <div class="file-upload-text">
+                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
+                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
+                                </div>
+                                <span class="file-upload-btn">Parcourir</span>
+                                <input type="file" id="ficheRenseignement" name="ficheRenseignement" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-help-text">Fiche client complète avec informations personnelles et financières</div>
+                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
+                            <div id="ficheRenseignement_list" class="file-list hidden"></div>
+                        </div>
+
+                        <div class="document-field zeendoc-field">
+                            <label>Dernier avis d'imposition <span class="required">*</span></label>
+                            <div class="file-upload">
+                                <span class="file-upload-icon">📎</span>
+                                <div class="file-upload-text">
+                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
+                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
+                                </div>
+                                <span class="file-upload-btn">Parcourir</span>
+                                <input type="file" id="avisImposition" name="avisImposition" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-help-text">Pour chaque contact si pas d'imposition commune</div>
+                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
+                            <div id="avisImposition_list" class="file-list hidden"></div>
+                        </div>
+
+                        <div class="document-field zeendoc-field">
+                            <label>Bulletins de salaire <span class="required">*</span></label>
+                            <div class="file-upload">
+                                <span class="file-upload-icon">📎</span>
+                                <div class="file-upload-text">
+                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
+                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
+                                </div>
+                                <span class="file-upload-btn">Parcourir</span>
+                                <input type="file" id="bulletinsSalaire" name="bulletinsSalaire" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-help-text">Dernier bulletin + bulletin décembre N-1 pour chaque contact</div>
+                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
+                            <div id="bulletinsSalaire_list" class="file-list hidden"></div>
+                        </div>
+
+                        <div class="document-field zeendoc-field">
+                            <label>Infos retraite - estimation du montant <span class="required">*</span></label>
+                            <div class="file-upload">
+                                <span class="file-upload-icon">📎</span>
+                                <div class="file-upload-text">
+                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
+                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
+                                </div>
+                                <span class="file-upload-btn">Parcourir</span>
+                                <input type="file" id="infosRetraite" name="infosRetraite" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-help-text">Relevé de situation individuelle, estimation retraite, etc.</div>
+                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
+                            <div id="infosRetraite_list" class="file-list hidden"></div>
+                        </div>
+
+                        <div class="document-field zeendoc-field">
+                            <label>Derniers relevés de placement financier <span class="required">*</span></label>
+                            <div class="file-upload">
+                                <span class="file-upload-icon">📎</span>
+                                <div class="file-upload-text">
+                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
+                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
+                                </div>
+                                <span class="file-upload-btn">Parcourir</span>
+                                <input type="file" id="relevesPlacement" name="relevesPlacement" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-help-text">Avec dates pour assurance vie, PEA, comptes titres, etc.</div>
+                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
+                            <div id="relevesPlacement_list" class="file-list hidden"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents complémentaires -->
+                <div class="form-section">
+                    <div class="section-title">Documents complémentaires (selon situation)</div>
+                    <div class="document-fields">
+                        <div class="document-field zeendoc-field">
+                            <label>CNI recto/verso + livret de famille</label>
+                            <div class="file-upload">
+                                <span class="file-upload-icon">📎</span>
+                                <div class="file-upload-text">
+                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
+                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
+                                </div>
+                                <span class="file-upload-btn">Parcourir</span>
+                                <input type="file" id="cniLivret" name="cniLivret" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                            </div>
+                            <div class="file-help-text">Pour chaque contact, CNI recto et verso + livret de famille si applicable</div>
+                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
+                            <div id="cniLivret_list" class="file-list hidden"></div>
+                        </div>
+
+                        <div class="document-field zeendoc-field">
                             <label>Tableau d'amortissement + offre de prêt</label>
                             <div class="file-upload">
                                 <span class="file-upload-icon">📎</span>
                                 <div class="file-upload-text">
                                     <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                                    <small class="zeendoc-naming">Nommage automatique ZeenDoc activé</small>
+                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
                                 </div>
                                 <span class="file-upload-btn">Parcourir</span>
                                 <input type="file" id="tableauAmortissement" name="tableauAmortissement" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
@@ -504,7 +606,7 @@
                                 <span class="file-upload-icon">📎</span>
                                 <div class="file-upload-text">
                                     <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                                    <small class="zeendoc-naming">Nommage automatique ZeenDoc activé</small>
+                                    <small class="zeendoc-naming">🚀 Envoi automatique vers ZeenDoc</small>
                                 </div>
                                 <span class="file-upload-btn">Parcourir</span>
                                 <input type="file" id="autresDocuments" name="autresDocuments" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
@@ -516,13 +618,18 @@
                     </div>
 
                     <div class="zeendoc-workflow-info">
-                        <h4>📁 Workflow ZeenDoc Ingénierie</h4>
+                        <h4>🚀 Workflow Automatique Ingénierie</h4>
                         <ol>
-                            <li>Vos documents seront automatiquement nommés selon le format ZeenDoc ingénierie</li>
-                            <li>Un email sera généré vers votre adresse de dépôt ZeenDoc avec classification par catégorie</li>
-                            <li>Les pièces seront classées automatiquement dans le dossier client avec référence conseiller</li>
-                            <li>Une copie de suivi vous sera envoyée pour traçabilité</li>
+                            <li><strong>Email Principal:</strong> Envoyé avec archive ZIP si fichiers volumineux</li>
+                            <li><strong>ZeenDoc:</strong> Fichiers originaux envoyés (emails multiples si nécessaire)</li>
+                            <li><strong>Nommage:</strong> Format ZeenDoc ingénierie avec conseiller et secteur</li>
+                            <li><strong>Classement:</strong> Documents triés par catégorie spécialisée</li>
+                            <li><strong>Suivi:</strong> Copies de confirmation envoyées automatiquement</li>
                         </ol>
+                        <div class="auto-info">
+                            <span class="auto-badge">⚡ Envoi 100% automatique</span>
+                            <small>Plus besoin d'ouvrir votre client mail !</small>
+                        </div>
                     </div>
                 </div>
 
@@ -530,7 +637,7 @@
                     Veuillez remplir tous les champs obligatoires et joindre les documents requis avant de pouvoir envoyer la demande.
                 </div>
 
-                <button type="submit" class="submit-btn" id="submitBtn">Envoyer la demande d'ingénierie</button>
+                <button type="submit" class="submit-btn" id="submitBtn">Envoyer automatiquement la demande d'ingénierie</button>
             </form>
         </div>
     </div>
@@ -883,7 +990,7 @@
 
             var submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Préparation en cours...';
+            submitBtn.textContent = 'Envoi automatique en cours...';
 
             // Envoyer vers le backend
             fetch('/envoyer-demande-ingenierie', {
@@ -893,10 +1000,10 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    let message = '✅ Demande d\'ingénierie préparée avec succès!\n\n';
+                    let message = '✅ Demande d\'ingénierie envoyée automatiquement avec succès!\n\n';
                     
                     if (data.fichiers_count > 0) {
-                        message += '📁 ' + data.fichiers_count + ' document(s) préparé(s) pour ZeenDoc:\n';
+                        message += '📁 ' + data.fichiers_count + ' document(s) traité(s):\n';
                         data.fichiers_info.forEach(nom => {
                             message += '• ' + nom + '\n';
                         });
@@ -904,39 +1011,40 @@
                     }
                     
                     if (data.envoi_auto) {
-                        message += '📧 Email automatiquement envoyé vers ZeenDoc\n';
-                        message += '📩 Copie de suivi envoyée vers votre boîte mail\n\n';
-                    } else {
-                        message += '📧 Votre client mail va s\'ouvrir avec les emails pré-remplis:\n';
-                        message += '1. Email principal vers votre destinataire\n';
-                        if (data.mailto_zeendoc) {
-                            message += '2. Email vers ZeenDoc avec les pièces jointes\n';
+                        message += '🚀 ENVOIS AUTOMATIQUES RÉUSSIS:\n\n';
+                        
+                        // Email principal
+                        if (data.details_envoi.email_principal) {
+                            message += '📧 Email principal: ✅ Envoyé\n';
                         }
-                        message += '\n';
+                        
+                        // Emails ZeenDoc
+                        if (data.details_envoi.total_emails_zeendoc > 0) {
+                            if (data.details_envoi.total_emails_zeendoc > 1) {
+                                message += '📁 ZeenDoc: ' + data.details_envoi.total_emails_zeendoc + ' emails envoyés (fichiers volumineux)\n';
+                                data.details_envoi.zeendoc_parties.forEach(partie => {
+                                    const status = partie.succes ? '✅' : '❌';
+                                    message += '   └─ Partie ' + partie.partie + ': ' + status + ' ' + partie.fichiers_count + ' fichier(s)\n';
+                                });
+                            } else {
+                                message += '📁 ZeenDoc: ✅ Email envoyé\n';
+                            }
+                        }
+                        
+                        message += '\n🎉 Tous les destinataires ont été notifiés automatiquement !';
+                        
+                    } else {
+                        message += '❌ Erreur lors de l\'envoi automatique.\n';
+                        message += 'Veuillez vérifier votre configuration SMTP.';
                     }
-                    
-                    message += 'Vérifiez le contenu et cliquez sur "Envoyer" dans votre client mail.';
                     
                     alert(message);
-                    
-                    // Ouvrir les emails
-                    if (data.mailto_principal) {
-                        setTimeout(() => {
-                            window.location.href = data.mailto_principal;
-                        }, 1000);
-                    }
-                    
-                    if (data.mailto_zeendoc && !data.envoi_auto) {
-                        setTimeout(() => {
-                            window.open(data.mailto_zeendoc, '_blank');
-                        }, 2000);
-                    }
                     
                     // Réinitialiser le formulaire
                     resetForm();
                     
                 } else {
-                    alert('❌ Erreur lors de la préparation: ' + data.message);
+                    alert('❌ Erreur lors de l\'envoi: ' + data.message);
                 }
             })
             .catch(error => {
@@ -945,7 +1053,7 @@
             })
             .finally(() => {
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Envoyer la demande d\'ingénierie';
+                submitBtn.textContent = 'Envoyer automatiquement la demande d\'ingénierie';
                 updateSubmitButton();
             });
         }
@@ -971,111 +1079,9 @@
             
             var submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Envoyer la demande d\'ingénierie';
+            submitBtn.textContent = 'Envoyer automatiquement la demande d\'ingénierie';
             updateSubmitButton();
         }
     </script>
 </body>
-</html>>Fiche de renseignement <span class="required">*</span></label>
-                            <div class="file-upload">
-                                <span class="file-upload-icon">📎</span>
-                                <div class="file-upload-text">
-                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                                    <small class="zeendoc-naming">Nommage automatique ZeenDoc activé</small>
-                                </div>
-                                <span class="file-upload-btn">Parcourir</span>
-                                <input type="file" id="ficheRenseignement" name="ficheRenseignement" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            </div>
-                            <div class="file-help-text">Fiche client complète avec informations personnelles et financières</div>
-                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
-                            <div id="ficheRenseignement_list" class="file-list hidden"></div>
-                        </div>
-
-                        <div class="document-field zeendoc-field">
-                            <label>Dernier avis d'imposition <span class="required">*</span></label>
-                            <div class="file-upload">
-                                <span class="file-upload-icon">📎</span>
-                                <div class="file-upload-text">
-                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                                    <small class="zeendoc-naming">Nommage automatique ZeenDoc activé</small>
-                                </div>
-                                <span class="file-upload-btn">Parcourir</span>
-                                <input type="file" id="avisImposition" name="avisImposition" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            </div>
-                            <div class="file-help-text">Pour chaque contact si pas d'imposition commune</div>
-                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
-                            <div id="avisImposition_list" class="file-list hidden"></div>
-                        </div>
-
-                        <div class="document-field zeendoc-field">
-                            <label>Bulletins de salaire <span class="required">*</span></label>
-                            <div class="file-upload">
-                                <span class="file-upload-icon">📎</span>
-                                <div class="file-upload-text">
-                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                                    <small class="zeendoc-naming">Nommage automatique ZeenDoc activé</small>
-                                </div>
-                                <span class="file-upload-btn">Parcourir</span>
-                                <input type="file" id="bulletinsSalaire" name="bulletinsSalaire" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            </div>
-                            <div class="file-help-text">Dernier bulletin + bulletin décembre N-1 pour chaque contact</div>
-                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
-                            <div id="bulletinsSalaire_list" class="file-list hidden"></div>
-                        </div>
-
-                        <div class="document-field zeendoc-field">
-                            <label>Infos retraite - estimation du montant <span class="required">*</span></label>
-                            <div class="file-upload">
-                                <span class="file-upload-icon">📎</span>
-                                <div class="file-upload-text">
-                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                                    <small class="zeendoc-naming">Nommage automatique ZeenDoc activé</small>
-                                </div>
-                                <span class="file-upload-btn">Parcourir</span>
-                                <input type="file" id="infosRetraite" name="infosRetraite" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            </div>
-                            <div class="file-help-text">Relevé de situation individuelle, estimation retraite, etc.</div>
-                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
-                            <div id="infosRetraite_list" class="file-list hidden"></div>
-                        </div>
-
-                        <div class="document-field zeendoc-field">
-                            <label>Derniers relevés de placement financier <span class="required">*</span></label>
-                            <div class="file-upload">
-                                <span class="file-upload-icon">📎</span>
-                                <div class="file-upload-text">
-                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                                    <small class="zeendoc-naming">Nommage automatique ZeenDoc activé</small>
-                                </div>
-                                <span class="file-upload-btn">Parcourir</span>
-                                <input type="file" id="relevesPlacement" name="relevesPlacement" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            </div>
-                            <div class="file-help-text">Avec dates pour assurance vie, PEA, comptes titres, etc.</div>
-                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
-                            <div id="relevesPlacement_list" class="file-list hidden"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Documents complémentaires -->
-                <div class="form-section">
-                    <div class="section-title">Documents complémentaires (selon situation)</div>
-                    <div class="document-fields">
-                        <div class="document-field zeendoc-field">
-                            <label>CNI recto/verso + livret de famille</label>
-                            <div class="file-upload">
-                                <span class="file-upload-icon">📎</span>
-                                <div class="file-upload-text">
-                                    <p>Glissez vos fichiers ici ou cliquez pour sélectionner</p>
-                                    <small class="zeendoc-naming">Nommage automatique ZeenDoc activé</small>
-                                </div>
-                                <span class="file-upload-btn">Parcourir</span>
-                                <input type="file" id="cniLivret" name="cniLivret" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
-                            </div>
-                            <div class="file-help-text">Pour chaque contact, CNI recto et verso + livret de famille si applicable</div>
-                            <div class="file-help-text formats">Formats acceptés: PDF, DOC, DOCX, JPG, PNG</div>
-                            <div id="cniLivret_list" class="file-list hidden"></div>
-                        </div>
-
-                        <div class="document-field zeendoc-field">
-                            <label
+</html>
