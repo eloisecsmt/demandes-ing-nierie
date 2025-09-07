@@ -746,6 +746,33 @@ Secteur: {data.get('secteurDemandeur', 'Non spécifié')}
 
 # ===== FONCTIONS POUR LES DEMANDES D'INGÉNIERIE =====
 
+def preparer_fichiers_email_principal(files):
+    """Prépare les fichiers pour l'email principal uniquement (sans nommage ZeenDoc)"""
+    
+    fichiers_pieces = []
+    
+    for key, file in files.items():
+        if file and file.filename:
+            try:
+                # Lire le contenu du fichier
+                file_content = file.read()
+                file.seek(0)  # Remettre le curseur au début
+                
+                fichiers_pieces.append({
+                    'nom': file.filename,  # Garder le nom original
+                    'nom_original': file.filename,
+                    'contenu': file_content,
+                    'type_mime': file.content_type or 'application/octet-stream',
+                    'taille': len(file_content),
+                    'categorie': 'Documents'  # Catégorie générique
+                })
+                
+            except Exception as e:
+                print(f"Erreur préparation fichier email principal {file.filename}: {str(e)}")
+                continue
+    
+    return fichiers_pieces
+
 def preparer_fichiers_zeendoc_ingenierie(files, nom, prenom, conseiller, secteur):
     """Prépare les fichiers pour l'envoi vers ZeenDoc - version ingénierie"""
     
@@ -825,6 +852,7 @@ def obtenir_categorie_document_ingenierie(doc_id):
         'bulletinsSalaire': 'Revenus',
         'infosRetraite': 'Retraite',
         'relevesPlacement': 'Placements',
+        'profilRisques': 'Profil Client',
         'cniLivret': 'Identite',
         'tableauAmortissement': 'Credits',
         'autresDocuments': 'Autres'
@@ -875,7 +903,7 @@ Nombre de pieces: {len(fichiers_pieces)}
     corps += f"""
 
 === INFORMATIONS TECHNIQUES ===
-Format de nommage: INGENIERIE_NOM_Prenom_TypeDoc_Conseiller_Secteur_YYYYMMDD.ext
+Format de nommage: NOM_Prenom_TypeDoc_Conseiller_YYYYMMDD.ext
 Origine: Formulaire automatise de demande d'ingenierie
 Horodatage: {datetime.now().strftime('%d/%m/%Y a %H:%M:%S')}
 
