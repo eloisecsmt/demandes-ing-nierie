@@ -533,6 +533,59 @@ body {
     transform: translateY(-1px);
 }
 
+/* Option ZeenDoc */
+.zeendoc-option-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f0f8ff;
+    border-radius: 8px;
+    border-left: 4px solid #3498db;
+}
+
+.zeendoc-option-checkbox {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+.zeendoc-option-checkbox .checkmark {
+    border-color: #3498db;
+}
+
+.zeendoc-option-checkbox input[type="checkbox"]:checked + .checkmark {
+    background: #3498db;
+    border-color: #3498db;
+}
+
+/* Warning info pour email seul */
+.warning-info {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(243, 156, 18, 0.1);
+    border-radius: 6px;
+    text-align: center;
+}
+
+.warning-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f39c12;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.warning-info small {
+    display: block;
+    color: #f39c12;
+    font-weight: 500;
+    font-size: 0.8rem;
+}
+
 /* Workflow automatique pour ingénierie */
 .zeendoc-workflow-info {
     background: linear-gradient(135deg, #e8f8f5, #d5f4e6);
