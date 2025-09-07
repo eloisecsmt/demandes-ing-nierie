@@ -708,8 +708,10 @@ body {
     100% { opacity: 1; }
 }
 
+/* Animation pulse désactivée pour le bouton */
 .submit-btn:disabled {
-    animation: pulse 1.5s ease-in-out infinite;
+    /* animation: pulse 1.5s ease-in-out infinite; */
+    opacity: 0.7;
 }
 
 /* Responsive Design */
