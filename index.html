@@ -13,7 +13,7 @@
             <p>Conseil patrimonial et analyse financière personnalisée</p>
             <div class="zeendoc-info">
                 <span class="zeendoc-badge">📁 Intégration ZeenDoc Automatique</span>
-                <small>Documents automatiquement envoyés vers votre dépôt ZeenDoc + Email aux ingénieurs</small>
+                <small>Documents automatiquement envoyés vers votre dépôt ZeenDoc + Email principal</small>
             </div>
         </div>
 
@@ -620,13 +620,15 @@
                     <div class="zeendoc-workflow-info">
                         <h4>🚀 Workflow Automatique Ingénierie</h4>
                         <ol>
-                            <li><strong>Email Ingénieurie:</strong> Envoyé avec archive ZIP si fichiers volumineux</li>
+                            <li><strong>Email Principal:</strong> Envoyé avec archive ZIP si fichiers volumineux</li>
                             <li><strong>ZeenDoc:</strong> Fichiers originaux envoyés (emails multiples si nécessaire)</li>
                             <li><strong>Nommage:</strong> Format ZeenDoc ingénierie avec conseiller et secteur</li>
+                            <li><strong>Classement:</strong> Documents triés par catégorie spécialisée</li>
                             <li><strong>Suivi:</strong> Copies de confirmation envoyées automatiquement</li>
                         </ol>
                         <div class="auto-info">
-                            <span class="auto-badge">⚡ Envoi automatique</span>
+                            <span class="auto-badge">⚡ Envoi 100% automatique</span>
+                            <small>Plus besoin d'ouvrir votre client mail !</small>
                         </div>
                     </div>
                 </div>
@@ -789,7 +791,6 @@
 
         function genererNomZeenDocIngenierie(nomFichier, docId) {
             var nomConseiller = document.getElementById('nomConseiller').value || 'Conseiller';
-            var secteurConseiller = document.getElementById('secteurConseiller').value || 'Secteur';
             var nomContact1 = document.getElementById('nomContact1').value || 'Client';
             var prenomContact1 = document.getElementById('prenomContact1').value || '';
             
@@ -803,6 +804,7 @@
                 'bulletinsSalaire': 'Bulletins_Salaire',
                 'infosRetraite': 'Infos_Retraite',
                 'relevesPlacement': 'Releves_Placement',
+                'profilRisques': 'Profil_Risques',
                 'cniLivret': 'CNI_Livret',
                 'tableauAmortissement': 'Tableau_Amortissement',
                 'autresDocuments': 'Autres_Documents'
@@ -811,9 +813,8 @@
             var docType = mappingDocs[docId] || 'Document';
             var dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
             var conseillerClean = nomConseiller.replace(/\s+/g, '_');
-            var secteurClean = secteurConseiller.replace(/\s+/g, '_');
             
-            return 'INGENIERIE_' + nomContact1.toUpperCase() + '_' + prenomContact1 + '_' + docType + '_' + conseillerClean + '_' + secteurClean + '_' + dateStr + (extension ? '.' + extension : '');
+            return nomContact1.toUpperCase() + '_' + prenomContact1 + '_' + docType + '_' + conseillerClean + '_' + dateStr + (extension ? '.' + extension : '');
         }
 
         function updateFileList(inputId) {
@@ -1083,4 +1084,3 @@
     </script>
 </body>
 </html>
-
