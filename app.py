@@ -629,7 +629,7 @@ Reference dossier: INGENIERIE_{contact1_nom.upper()}_{contact1_prenom}_{datetime
 
 ---
 Demande generee automatiquement le {datetime.now().strftime('%d/%m/%Y a %H:%M')}
-Conseiller: {nom_conseiller}
+Conseiller: {nom_conseiller} ({secteur_conseiller})
 """
     
     return corps
