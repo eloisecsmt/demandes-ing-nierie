@@ -843,27 +843,6 @@
             updateSubmitButton();
         }
 
-        // Protection contre les erreurs d'extensions
-        function() {
-            const originalError = console.error;
-            console.error = function(...args) {
-                const message = args.join(' ');
-                if (message.includes('background_worker.js') ||
-                    message.includes('runtime.lastError') ||
-                    message.includes('extensionAdapter')) {
-                    return; // Ignorer les erreurs d'extensions
-                }
-                originalError.apply(console, args);
-            };
-        
-            window.addEventListener('unhandledrejection', function(e) {
-                const message = e.reason ? e.reason.toString() : '';
-                if (message.includes('runtime.lastError') ||
-                    message.includes('message channel closed')) {
-                    e.preventDefault();
-                }
-            });
-        })();
 
         function genererNomZeenDocIngenierie(nomFichier, docId) {
             var nomConseiller = document.getElementById('nomConseiller').value || 'Conseiller';
@@ -1178,5 +1157,6 @@
     </script>
 </body>
 </html>
+
 
 
