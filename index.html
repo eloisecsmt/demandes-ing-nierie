@@ -1010,150 +1010,150 @@
         }
 
         function handleFormSubmit(e) {
-            e.preventDefault();
-
-            console.log('=== DEBUGGING FORM SUBMIT ===');
-            console.log('uploadedDocuments:', uploadedDocuments);
-            console.log('Nombre de types de documents:', Object.keys(uploadedDocuments).length);
-
-            // Ajouter tous les fichiers uploadés
-            var totalFiles = 0;
-            for (var docId in uploadedDocuments) {
-                var files = uploadedDocuments[docId];
-                console.log(`Document ${docId}:`, files.length, 'fichier(s)');
-                for (var i = 0; i < files.length; i++) {
-                    formData.append(docId, files[i].file);
-                    totalFiles++;
-                    console.log(`  - Ajouté: ${files[i].file.name} (${files[i].file.size} bytes)`);
-                }
+        e.preventDefault();
+        
+        // 1. D'ABORD créer le FormData
+        var formData = new FormData(e.target);
+        
+        console.log('=== DEBUGGING FORM SUBMIT ===');
+        console.log('FormData créé:', formData);
+        console.log('uploadedDocuments:', uploadedDocuments);
+        console.log('Nombre de types de documents:', Object.keys(uploadedDocuments).length);
+        
+        // 2. ENSUITE ajouter le flag ZeenDoc
+        var envoyerVersZeendocCheckbox = document.getElementById('envoyerVersZeendocCheckbox');
+        formData.append('envoyerVersZeendoc', envoyerVersZeendocCheckbox.checked ? 'true' : 'false');
+        console.log('ZeenDoc activé:', envoyerVersZeendocCheckbox.checked);
+    
+        // 3. PUIS ajouter tous les fichiers uploadés
+        var totalFiles = 0;
+        for (var docId in uploadedDocuments) {
+            var files = uploadedDocuments[docId];
+            console.log(`Document ${docId}:`, files.length, 'fichier(s)');
+            for (var i = 0; i < files.length; i++) {
+                formData.append(docId, files[i].file);
+                totalFiles++;
+                console.log(`  - Ajouté: ${files[i].file.name} (${files[i].file.size} bytes)`);
+            }
+        }
+        console.log('Total fichiers ajoutés au FormData:', totalFiles);
+    
+        // 4. Traiter les objectifs
+        var objectifsCommunsCheckbox = document.getElementById('objectifsCommunsCheckbox');
+        if (objectifsCommunsCheckbox.checked) {
+            var objectifs = [];
+            var objectifsInputs = document.querySelectorAll('input[name="objectifs"]:checked');
+            for (var i = 0; i < objectifsInputs.length; i++) {
+                objectifs.push(objectifsInputs[i].value);
+            }
+            formData.append('objectifs_selected', JSON.stringify(objectifs));
+            formData.append('objectifs_communs', 'true');
+        } else {
+            var objectifsContact1 = [];
+            var objectifs1Inputs = document.querySelectorAll('input[name="objectifsContact1"]:checked');
+            for (var i = 0; i < objectifs1Inputs.length; i++) {
+                objectifsContact1.push(objectifs1Inputs[i].value);
             }
             
-            console.log('Total fichiers ajoutés au FormData:', totalFiles);
-                        
-            var formData = new FormData(e.target);
+            var objectifsContact2 = [];
+            var objectifs2Inputs = document.querySelectorAll('input[name="objectifsContact2"]:checked');
+            for (var i = 0; i < objectifs2Inputs.length; i++) {
+                objectifsContact2.push(objectifs2Inputs[i].value);
+            }
             
-            // Ajouter le flag d'envoi vers ZeenDoc
-            var envoyerVersZeendocCheckbox = document.getElementById('envoyerVersZeendocCheckbox');
-            formData.append('envoyerVersZeendoc', envoyerVersZeendocCheckbox.checked ? 'true' : 'false');
-            console.log('ZeenDoc activé:', envoyerVersZeendocCheckbox.checked);
-
-            // Ajouter tous les fichiers uploadés (même si ZeenDoc désactivé, pour l'email principal)
-            for (var docId in uploadedDocuments) {
-                var files = uploadedDocuments[docId];
-                for (var i = 0; i < files.length; i++) {
-                    formData.append(docId, files[i].file);
-                }
-            }
-
-            // Traiter les objectifs
-            var objectifsCommunsCheckbox = document.getElementById('objectifsCommunsCheckbox');
-            if (objectifsCommunsCheckbox.checked) {
-                var objectifs = [];
-                var objectifsInputs = document.querySelectorAll('input[name="objectifs"]:checked');
-                for (var i = 0; i < objectifsInputs.length; i++) {
-                    objectifs.push(objectifsInputs[i].value);
-                }
-                formData.append('objectifs_selected', JSON.stringify(objectifs));
-                formData.append('objectifs_communs', 'true');
-            } else {
-                var objectifsContact1 = [];
-                var objectifs1Inputs = document.querySelectorAll('input[name="objectifsContact1"]:checked');
-                for (var i = 0; i < objectifs1Inputs.length; i++) {
-                    objectifsContact1.push(objectifs1Inputs[i].value);
+            formData.append('objectifs_contact1', JSON.stringify(objectifsContact1));
+            formData.append('objectifs_contact2', JSON.stringify(objectifsContact2));
+            formData.append('objectifs_communs', 'false');
+        }
+    
+        // 5. Traiter les types de demande
+        var typesDemande = [];
+        var typesInputs = document.querySelectorAll('input[name="typeDemande"]:checked');
+        for (var i = 0; i < typesInputs.length; i++) {
+            typesDemande.push(typesInputs[i].value);
+        }
+        formData.append('types_demande_selected', JSON.stringify(typesDemande));
+    
+        var submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Envoi automatique en cours...';
+    
+        // 6. Envoyer vers le backend
+        fetch('/envoyer-demande-ingenierie', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('=== RÉPONSE DU SERVEUR ===');
+            console.log('Réponse complète:', data);
+            
+            if (data.status === 'success') {
+                console.log('Fichiers traités côté serveur:', data.fichiers_count);
+                console.log('Détails envoi:', data.details_envoi);
+                console.log('ZeenDoc activé côté serveur:', data.zeendoc_active);
+                
+                let message = '✅ Demande d\'ingénierie envoyée automatiquement avec succès!\n\n';
+                
+                if (data.fichiers_count > 0) {
+                    message += '📁 ' + data.fichiers_count + ' document(s) traité(s):\n';
+                    data.fichiers_info.forEach(nom => {
+                        message += '• ' + nom + '\n';
+                    });
+                    message += '\n';
                 }
                 
-                var objectifsContact2 = [];
-                var objectifs2Inputs = document.querySelectorAll('input[name="objectifsContact2"]:checked');
-                for (var i = 0; i < objectifs2Inputs.length; i++) {
-                    objectifsContact2.push(objectifs2Inputs[i].value);
-                }
-                
-                formData.append('objectifs_contact1', JSON.stringify(objectifsContact1));
-                formData.append('objectifs_contact2', JSON.stringify(objectifsContact2));
-                formData.append('objectifs_communs', 'false');
-            }
-
-            // Traiter les types de demande
-            var typesDemande = [];
-            var typesInputs = document.querySelectorAll('input[name="typeDemande"]:checked');
-            for (var i = 0; i < typesInputs.length; i++) {
-                typesDemande.push(typesInputs[i].value);
-            }
-            formData.append('types_demande_selected', JSON.stringify(typesDemande));
-
-            var submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Envoi automatique en cours...';
-
-            // Envoyer vers le backend
-            fetch('/envoyer-demande-ingenierie', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    let message = '✅ Demande d\'ingénierie envoyée automatiquement avec succès!\n\n';
+                if (data.envoi_auto) {
+                    message += '🚀 ENVOIS AUTOMATIQUES RÉUSSIS:\n\n';
                     
-                    if (data.fichiers_count > 0) {
-                        message += '📁 ' + data.fichiers_count + ' document(s) traité(s):\n';
-                        data.fichiers_info.forEach(nom => {
-                            message += '• ' + nom + '\n';
-                        });
-                        message += '\n';
+                    // Email principal
+                    if (data.details_envoi.email_principal) {
+                        message += '📧 Email principal: ✅ Envoyé\n';
                     }
                     
-                    if (data.envoi_auto) {
-                        message += '🚀 ENVOIS AUTOMATIQUES RÉUSSIS:\n\n';
-                        
-                        // Email principal
-                        if (data.details_envoi.email_principal) {
-                            message += '📧 Email principal: ✅ Envoyé\n';
-                        }
-                        
-                        // Emails ZeenDoc (seulement si activé)
-                        if (data.details_envoi.zeendoc_active) {
-                            if (data.details_envoi.total_emails_zeendoc > 0) {
-                                if (data.details_envoi.total_emails_zeendoc > 1) {
-                                    message += '📁 ZeenDoc: ' + data.details_envoi.total_emails_zeendoc + ' emails envoyés (fichiers volumineux)\n';
-                                    data.details_envoi.zeendoc_parties.forEach(partie => {
-                                        const status = partie.succes ? '✅' : '❌';
-                                        message += '   └─ Partie ' + partie.partie + ': ' + status + ' ' + partie.fichiers_count + ' fichier(s)\n';
-                                    });
-                                } else {
-                                    message += '📁 ZeenDoc: ✅ Email envoyé\n';
-                                }
+                    // Emails ZeenDoc (seulement si activé)
+                    if (data.details_envoi.zeendoc_active) {
+                        if (data.details_envoi.total_emails_zeendoc > 0) {
+                            if (data.details_envoi.total_emails_zeendoc > 1) {
+                                message += '📁 ZeenDoc: ' + data.details_envoi.total_emails_zeendoc + ' emails envoyés (fichiers volumineux)\n';
+                                data.details_envoi.zeendoc_parties.forEach(partie => {
+                                    const status = partie.succes ? '✅' : '❌';
+                                    message += '   └─ Partie ' + partie.partie + ': ' + status + ' ' + partie.fichiers_count + ' fichier(s)\n';
+                                });
+                            } else {
+                                message += '📁 ZeenDoc: ✅ Email envoyé\n';
                             }
-                        } else {
-                            message += '📁 ZeenDoc: ⏭️ Envoi désactivé (choix utilisateur)\n';
                         }
-                        
-                        message += '\n🎉 Tous les envois demandés ont été effectués automatiquement !';
-                        
                     } else {
-                        message += '❌ Erreur lors de l\'envoi automatique.\n';
-                        message += 'Veuillez vérifier votre configuration SMTP.';
+                        message += '📁 ZeenDoc: ⏭️ Envoi désactivé (choix utilisateur)\n';
                     }
                     
-                    alert(message);
-                    
-                    // Réinitialiser le formulaire
-                    resetForm();
+                    message += '\n🎉 Tous les envois demandés ont été effectués automatiquement !';
                     
                 } else {
-                    alert('❌ Erreur lors de l\'envoi: ' + data.message);
+                    message += '❌ Erreur lors de l\'envoi automatique.\n';
+                    message += 'Veuillez vérifier votre configuration SMTP.';
                 }
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                alert('❌ Erreur technique lors de l\'envoi. Veuillez réessayer.');
-            })
-            .finally(() => {
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Envoyer automatiquement la demande d\'ingénierie';
-                updateSubmitButton();
-            });
-        }
+                
+                alert(message);
+                
+                // Réinitialiser le formulaire
+                resetForm();
+                
+            } else {
+                alert('❌ Erreur lors de l\'envoi: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('❌ Erreur technique lors de l\'envoi. Veuillez réessayer.');
+        })
+        .finally(() => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Envoyer automatiquement la demande d\'ingénierie';
+            updateSubmitButton();
+        });
+    }
 
         function resetForm() {
             document.getElementById('ingenierieForm').reset();
@@ -1185,6 +1185,7 @@
     </script>
 </body>
 </html>
+
 
 
 
