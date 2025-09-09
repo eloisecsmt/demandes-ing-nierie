@@ -968,17 +968,26 @@
         function checkRequiredDocuments() {
             // Si ZeenDoc n'est pas activé, on n'exige pas les documents
             var envoyerVersZeendocCheckbox = document.getElementById('envoyerVersZeendocCheckbox');
+            console.log('=== CHECK REQUIRED DOCUMENTS ===');
+            console.log('ZeenDoc checkbox checked:', envoyerVersZeendocCheckbox.checked);
+            
             if (!envoyerVersZeendocCheckbox.checked) {
+                console.log('ZeenDoc désactivé - pas de documents requis');
                 return true; // Pas de documents requis si pas d'envoi vers ZeenDoc
             }
+
+            console.log('Documents requis:', requiredDocuments);
             
             // Sinon, vérifier que tous les documents obligatoires sont présents
             for (var i = 0; i < requiredDocuments.length; i++) {
                 var docId = requiredDocuments[i];
+                 console.log(`${docId}: ${hasFiles ? 'OK' : 'MANQUANT'}`);
                 if (!uploadedDocuments[docId] || uploadedDocuments[docId].length === 0) {
+                    console.log('Document manquant:', docId);
                     return false;
                 }
             }
+                console.log('Tous les documents requis sont présents');
             return true;
         }
 
@@ -1002,12 +1011,31 @@
 
         function handleFormSubmit(e) {
             e.preventDefault();
+
+            console.log('=== DEBUGGING FORM SUBMIT ===');
+            console.log('uploadedDocuments:', uploadedDocuments);
+            console.log('Nombre de types de documents:', Object.keys(uploadedDocuments).length);
+
+            // Ajouter tous les fichiers uploadés
+            var totalFiles = 0;
+            for (var docId in uploadedDocuments) {
+                var files = uploadedDocuments[docId];
+                console.log(`Document ${docId}:`, files.length, 'fichier(s)');
+                for (var i = 0; i < files.length; i++) {
+                    formData.append(docId, files[i].file);
+                    totalFiles++;
+                    console.log(`  - Ajouté: ${files[i].file.name} (${files[i].file.size} bytes)`);
+                }
+            }
             
+            console.log('Total fichiers ajoutés au FormData:', totalFiles);
+                        
             var formData = new FormData(e.target);
             
             // Ajouter le flag d'envoi vers ZeenDoc
             var envoyerVersZeendocCheckbox = document.getElementById('envoyerVersZeendocCheckbox');
             formData.append('envoyerVersZeendoc', envoyerVersZeendocCheckbox.checked ? 'true' : 'false');
+            console.log('ZeenDoc activé:', envoyerVersZeendocCheckbox.checked);
 
             // Ajouter tous les fichiers uploadés (même si ZeenDoc désactivé, pour l'email principal)
             for (var docId in uploadedDocuments) {
@@ -1157,6 +1185,7 @@
     </script>
 </body>
 </html>
+
 
 
 
