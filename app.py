@@ -17,7 +17,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Configuration Email pour ZeenDoc - Multi-secteurs
-EMAIL_DESTINATAIRE = os.environ.get('EMAIL_DESTINATAIRE', 'ingenierie@optia-conseil.fr')
+EMAIL_DESTINATAIRE = os.environ.get('EMAIL_DESTINATAIRE', 'eloise.csmt@gmail.com')
 
 # Adresses ZeenDoc par secteur
 ZEENDOC_EMAIL_LEHAVRE = os.environ.get('ZEENDOC_EMAIL_LEHAVRE', 'depot_docusign.optia_finance@zeenmail.com')
