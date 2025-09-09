@@ -174,8 +174,62 @@ def envoyer_demande():
 @app.route('/envoyer-demande-ingenierie', methods=['POST'])
 def envoyer_demande_ingenierie():
     try:
+        print("=== DEBUGGING BACKEND DÉTAILLÉ ===")
+        
+        # Debug 1: Vérifier la requête complète
+        print(f"📥 Content-Type: {request.content_type}")
+        print(f"📥 Content-Length: {request.content_length}")
+        print(f"📥 Method: {request.method}")
+        
+        # Debug 2: Lister toutes les données reçues
+        print(f"📋 Form keys: {list(request.form.keys())}")
+        print(f"📋 Form values sample: {dict(list(request.form.items())[:5])}")  # Premiers 5 éléments
+        
+        # Debug 3: Analyser request.files EN DÉTAIL
+        print(f"📎 Files keys: {list(request.files.keys())}")
+        print(f"📎 Files type: {type(request.files)}")
+        
+        # Debug 4: Examiner chaque fichier individuellement
+        total_files_received = 0
+        for key in request.files.keys():
+            files = request.files.getlist(key)
+            print(f"📁 Key '{key}': {len(files)} fichier(s)")
+            
+            for i, file in enumerate(files):
+                if file and file.filename:
+                    total_files_received += 1
+                    print(f"  - Fichier {i+1}: {file.filename} ({len(file.read())} bytes)")
+                    file.seek(0)  # Remettre le curseur au début après lecture
+                else:
+                    print(f"  - Fichier {i+1}: VIDE ou sans nom")
+        
+        print(f"📊 Total fichiers valides reçus: {total_files_received}")
+        
+        # Debug 5: Vérifier si la méthode de préparation des fichiers fonctionne
+        if total_files_received > 0:
+            print("🔄 Test de préparation des fichiers...")
+            try:
+                # Récupérer quelques données de test
+                data = request.form.to_dict()
+                secteur_conseiller = data.get('secteurConseiller', 'Test')
+                contact1_nom = data.get('nomContact1', 'TestNom')
+                contact1_prenom = data.get('prenomContact1', 'TestPrenom')
+                nom_conseiller = data.get('nomConseiller', 'TestConseiller')
+                
+                # Tester la préparation
+                fichiers_pieces = preparer_fichiers_zeendoc_ingenierie(
+                    request.files, contact1_nom, contact1_prenom, nom_conseiller, secteur_conseiller
+                )
+                print(f"✅ Fichiers préparés: {len(fichiers_pieces)}")
+                for fichier in fichiers_pieces[:3]:  # Afficher les 3 premiers
+                    print(f"  - {fichier['nom']} ({fichier['taille']} bytes)")
+                    
+            except Exception as e:
+                print(f"❌ Erreur préparation fichiers: {str(e)}")
+        
         # Vérification de la configuration SMTP
         if not all([SMTP_SERVER, SMTP_USERNAME, SMTP_PASSWORD]):
+            print("❌ Configuration SMTP incomplète")
             return jsonify({
                 "status": "error", 
                 "message": "Configuration SMTP incomplète. Veuillez configurer SMTP_SERVER, SMTP_USERNAME et SMTP_PASSWORD."
