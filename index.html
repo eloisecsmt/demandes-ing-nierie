@@ -805,50 +805,56 @@
             });
         }
 
-        function handleDocumentUpload(inputId) {
-            var input = document.getElementById(inputId);
-            
-            if (!uploadedDocuments[inputId]) {
-                uploadedDocuments[inputId] = [];
-            }
-
-            if (input.files.length > 0) {
-                for (var i = 0; i < input.files.length; i++) {
-                    var file = input.files[i];
-                    
-                    // Générer le nom ZeenDoc automatiquement
-                    var nomZeenDoc = genererNomZeenDocIngenierie(file.name, inputId);
-                    
-                    var exists = false;
-                    for (var j = 0; j < uploadedDocuments[inputId].length; j++) {
-                        if (uploadedDocuments[inputId][j].name === file.name && uploadedDocuments[inputId][j].size === file.size) {
-                            exists = true;
-                            break;
-                        }
-                    }
-                    
-                    if (!exists) {
-                        uploadedDocuments[inputId].push({
-                            file: file,
-                            nomOriginal: file.name,
-                            nomZeenDoc: nomZeenDoc,
-                            id: Date.now() + Math.random()
-                        });
-                    }
-                }
-                updateFileList(inputId);
-            }
-
-            input.value = '';
-            updateSubmitButton();
+        function handleDocumentUpload(inputId, docName) {
+        const input = document.getElementById(inputId);
+        
+        // Récupérer les infos du client
+        const nomConseiller = document.getElementById('nomConseiller').value;
+        const nomContact1 = document.getElementById('nomContact1').value;
+        const prenomContact1 = document.getElementById('prenomContact1').value;
+        const secteurConseiller = document.getElementById('secteurConseiller').value;
+        
+        if (!uploadedDocuments[inputId]) {
+            uploadedDocuments[inputId] = [];
         }
+    
+        if (input.files.length > 0) {
+            Array.from(input.files).forEach(file => {
+                // Générer le nom ZeenDoc automatiquement
+                const nomZeenDoc = genererNomZeenDocIngenierie(
+                    file.name, 
+                    nomContact1, 
+                    prenomContact1, 
+                    nomConseiller, 
+                    secteurConseiller, 
+                    inputId
+                );
+                
+                // Vérifier si le fichier n'est pas déjà dans la liste
+                const exists = uploadedDocuments[inputId].some(existingFile => 
+                    existingFile.nomOriginal === file.name && existingFile.file.size === file.size
+                );
+                
+                if (!exists) {
+                    uploadedDocuments[inputId].push({
+                        file: file,
+                        name: docName,  // ← AJOUTER CETTE LIGNE
+                        nomOriginal: file.name,
+                        nomZeenDoc: nomZeenDoc,
+                        id: Date.now() + Math.random()
+                    });
+                }
+            });
+    
+            updateFileList(inputId);
+        }
+    
+        input.value = '';
+        updateSubmitButton();
+    }
 
 
-        function genererNomZeenDocIngenierie(nomFichier, docId) {
-            var nomConseiller = document.getElementById('nomConseiller').value || 'Conseiller';
-            var nomContact1 = document.getElementById('nomContact1').value || 'Client';
-            var prenomContact1 = document.getElementById('prenomContact1').value || '';
-            
+        function genererNomZeenDocIngenierie(nomFichier, nomContact1, prenomContact1, nomConseiller, secteurConseiller, docId) {
             // Extraire l'extension
             var extension = nomFichier.includes('.') ? nomFichier.split('.').pop().toLowerCase() : '';
             
@@ -868,10 +874,15 @@
             var docType = mappingDocs[docId] || 'Document';
             var dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
             var conseillerClean = nomConseiller.replace(/\s+/g, '_');
+            var secteurClean = secteurConseiller.replace(/\s+/g, '_');
             
-            return nomContact1.toUpperCase() + '_' + prenomContact1 + '_' + docType + '_' + conseillerClean + '_' + dateStr + (extension ? '.' + extension : '');
+            // Vérifier que les champs obligatoires sont remplis
+            if (!nomContact1 || !prenomContact1) {
+                return `INGENIERIE_${docType}_${conseillerClean}_${secteurClean}_${dateStr}${extension ? '.' + extension : ''}`;
+            }
+            
+            return `INGENIERIE_${nomContact1.toUpperCase()}_${prenomContact1}_${docType}_${conseillerClean}_${secteurClean}_${dateStr}${extension ? '.' + extension : ''}`;
         }
-
         function updateFileList(inputId) {
             var fileList = document.getElementById(inputId + '_list');
             var files = uploadedDocuments[inputId] || [];
@@ -979,7 +990,7 @@
         
         for (var i = 0; i < requiredDocuments.length; i++) {
             var docId = requiredDocuments[i];
-            var hasFiles = uploadedDocuments[docId] && uploadedDocuments[docId].length > 0; // CETTE LIGNE ÉTAIT MANQUANTE
+            var hasFiles = uploadedDocuments[docId] && uploadedDocuments[docId].length > 0; // ← CETTE LIGNE ÉTAIT MANQUANTE
             console.log(`${docId}: ${hasFiles ? 'OK' : 'MANQUANT'}`);
             
             if (!hasFiles) {
@@ -1011,158 +1022,270 @@
         }
 
         function handleFormSubmit(e) {
-        e.preventDefault();
-        
-        // 1. D'ABORD créer le FormData
-        var formData = new FormData(e.target);
-        
-        console.log('=== DEBUGGING FORM SUBMIT ===');
-        console.log('FormData créé:', formData);
-        console.log('uploadedDocuments:', uploadedDocuments);
-        console.log('Nombre de types de documents:', Object.keys(uploadedDocuments).length);
-        
-        // 2. ENSUITE ajouter le flag ZeenDoc
-        var envoyerVersZeendocCheckbox = document.getElementById('envoyerVersZeendocCheckbox');
-        formData.append('envoyerVersZeendoc', envoyerVersZeendocCheckbox.checked ? 'true' : 'false');
-        console.log('ZeenDoc activé:', envoyerVersZeendocCheckbox.checked);
-    
-        // 3. PUIS ajouter tous les fichiers uploadés
-        var totalFiles = 0;
-        for (var docId in uploadedDocuments) {
-            var files = uploadedDocuments[docId];
-            console.log(`Document ${docId}:`, files.length, 'fichier(s)');
-            for (var i = 0; i < files.length; i++) {
-                formData.append(docId, files[i].file);
-                totalFiles++;
-                console.log(`  - Ajouté: ${files[i].file.name} (${files[i].file.size} bytes)`);
-            }
-        }
-        console.log('Total fichiers ajoutés au FormData:', totalFiles);
-    
-        // 4. Traiter les objectifs
-        var objectifsCommunsCheckbox = document.getElementById('objectifsCommunsCheckbox');
-        if (objectifsCommunsCheckbox.checked) {
-            var objectifs = [];
-            var objectifsInputs = document.querySelectorAll('input[name="objectifs"]:checked');
-            for (var i = 0; i < objectifsInputs.length; i++) {
-                objectifs.push(objectifsInputs[i].value);
-            }
-            formData.append('objectifs_selected', JSON.stringify(objectifs));
-            formData.append('objectifs_communs', 'true');
-        } else {
-            var objectifsContact1 = [];
-            var objectifs1Inputs = document.querySelectorAll('input[name="objectifsContact1"]:checked');
-            for (var i = 0; i < objectifs1Inputs.length; i++) {
-                objectifsContact1.push(objectifs1Inputs[i].value);
+            e.preventDefault();
+            
+            console.log('=== DÉBUT ENVOI FORMULAIRE INGÉNIERIE ===');
+            
+            // Vérifications préliminaires
+            if (!checkRequiredFields() || !checkObjectifs() || !checkTypeDemande()) {
+                alert('❌ Veuillez remplir tous les champs obligatoires');
+                return;
             }
             
-            var objectifsContact2 = [];
-            var objectifs2Inputs = document.querySelectorAll('input[name="objectifsContact2"]:checked');
-            for (var i = 0; i < objectifs2Inputs.length; i++) {
-                objectifsContact2.push(objectifs2Inputs[i].value);
+            // Vérifier si ZeenDoc est activé et si les documents sont requis
+            var envoyerVersZeendocCheckbox = document.getElementById('envoyerVersZeendocCheckbox');
+            var zeendocActive = envoyerVersZeendocCheckbox.checked;
+            
+            if (zeendocActive && !checkRequiredDocuments()) {
+                alert('❌ Veuillez joindre tous les documents obligatoires pour l\'envoi vers ZeenDoc');
+                return;
             }
             
-            formData.append('objectifs_contact1', JSON.stringify(objectifsContact1));
-            formData.append('objectifs_contact2', JSON.stringify(objectifsContact2));
-            formData.append('objectifs_communs', 'false');
-        }
-    
-        // 5. Traiter les types de demande
-        var typesDemande = [];
-        var typesInputs = document.querySelectorAll('input[name="typeDemande"]:checked');
-        for (var i = 0; i < typesInputs.length; i++) {
-            typesDemande.push(typesInputs[i].value);
-        }
-        formData.append('types_demande_selected', JSON.stringify(typesDemande));
-    
-        var submitBtn = document.getElementById('submitBtn');
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Envoi automatique en cours...';
-    
-        // 6. Envoyer vers le backend
-        fetch('/envoyer-demande-ingenierie', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('=== RÉPONSE DU SERVEUR ===');
-            console.log('Réponse complète:', data);
+            console.log('ZeenDoc activé:', zeendocActive);
+            console.log('Documents uploadés:', uploadedDocuments);
             
-            if (data.status === 'success') {
-                console.log('Fichiers traités côté serveur:', data.fichiers_count);
-                console.log('Détails envoi:', data.details_envoi);
-                console.log('ZeenDoc activé côté serveur:', data.zeendoc_active);
+            // 1. CRÉER LE FORMDATA avec tous les champs du formulaire
+            var formData = new FormData(e.target);
+            
+            // 2. AJOUTER LES PARAMÈTRES SPÉCIAUX
+            
+            // Flag ZeenDoc
+            formData.append('envoyerVersZeendoc', zeendocActive ? 'true' : 'false');
+            
+            // Gestion des objectifs patrimoniaux
+            var objectifsCommunsCheckbox = document.getElementById('objectifsCommunsCheckbox');
+            if (objectifsCommunsCheckbox.checked) {
+                // Objectifs communs
+                var objectifs = [];
+                var objectifsInputs = document.querySelectorAll('input[name="objectifs"]:checked');
+                for (var i = 0; i < objectifsInputs.length; i++) {
+                    objectifs.push(objectifsInputs[i].value);
+                }
+                formData.append('objectifs_selected', JSON.stringify(objectifs));
+                formData.append('objectifs_communs', 'true');
                 
-                let message = '✅ Demande d\'ingénierie envoyée automatiquement avec succès!\n\n';
-                
-                if (data.fichiers_count > 0) {
-                    message += '📁 ' + data.fichiers_count + ' document(s) traité(s):\n';
-                    data.fichiers_info.forEach(nom => {
-                        message += '• ' + nom + '\n';
-                    });
-                    message += '\n';
+                console.log('Objectifs communs sélectionnés:', objectifs);
+            } else {
+                // Objectifs séparés
+                var objectifsContact1 = [];
+                var objectifs1Inputs = document.querySelectorAll('input[name="objectifsContact1"]:checked');
+                for (var i = 0; i < objectifs1Inputs.length; i++) {
+                    objectifsContact1.push(objectifs1Inputs[i].value);
                 }
                 
-                if (data.envoi_auto) {
-                    message += '🚀 ENVOIS AUTOMATIQUES RÉUSSIS:\n\n';
+                var objectifsContact2 = [];
+                var objectifs2Inputs = document.querySelectorAll('input[name="objectifsContact2"]:checked');
+                for (var i = 0; i < objectifs2Inputs.length; i++) {
+                    objectifsContact2.push(objectifs2Inputs[i].value);
+                }
+                
+                formData.append('objectifs_contact1', JSON.stringify(objectifsContact1));
+                formData.append('objectifs_contact2', JSON.stringify(objectifsContact2));
+                formData.append('objectifs_communs', 'false');
+                
+                console.log('Objectifs Contact 1:', objectifsContact1);
+                console.log('Objectifs Contact 2:', objectifsContact2);
+            }
+            
+            // Gestion des types de demande
+            var typesDemande = [];
+            var typesInputs = document.querySelectorAll('input[name="typeDemande"]:checked');
+            for (var i = 0; i < typesInputs.length; i++) {
+                typesDemande.push(typesInputs[i].value);
+            }
+            formData.append('types_demande_selected', JSON.stringify(typesDemande));
+            
+            console.log('Types de demande sélectionnés:', typesDemande);
+            
+            // 3. AJOUTER TOUS LES FICHIERS UPLOADÉS
+            var totalFiles = 0;
+            var totalSize = 0;
+            
+            console.log('=== AJOUT DES FICHIERS ===');
+            for (var docId in uploadedDocuments) {
+                var filesForDoc = uploadedDocuments[docId];
+                console.log(`Traitement ${docId}: ${filesForDoc.length} fichier(s)`);
+                
+                for (var i = 0; i < filesForDoc.length; i++) {
+                    var fileData = filesForDoc[i];
                     
-                    // Email principal
-                    if (data.details_envoi.email_principal) {
-                        message += '📧 Email principal: ✅ Envoyé\n';
-                    }
-                    
-                    // Emails ZeenDoc (seulement si activé)
-                    if (data.details_envoi.zeendoc_active) {
-                        if (data.details_envoi.total_emails_zeendoc > 0) {
-                            if (data.details_envoi.total_emails_zeendoc > 1) {
-                                message += '📁 ZeenDoc: ' + data.details_envoi.total_emails_zeendoc + ' emails envoyés (fichiers volumineux)\n';
-                                data.details_envoi.zeendoc_parties.forEach(partie => {
-                                    const status = partie.succes ? '✅' : '❌';
-                                    message += '   └─ Partie ' + partie.partie + ': ' + status + ' ' + partie.fichiers_count + ' fichier(s)\n';
-                                });
-                            } else {
-                                message += '📁 ZeenDoc: ✅ Email envoyé\n';
-                            }
-                        }
+                    // Vérifier que le fichier existe
+                    if (fileData.file && fileData.file instanceof File) {
+                        formData.append(docId, fileData.file);
+                        totalFiles++;
+                        totalSize += fileData.file.size;
+                        
+                        console.log(`  ✓ Ajouté: ${fileData.file.name} (${formatFileSize(fileData.file.size)})`);
+                        console.log(`    → Nom ZeenDoc: ${fileData.nomZeenDoc}`);
                     } else {
-                        message += '📁 ZeenDoc: ⏭️ Envoi désactivé (choix utilisateur)\n';
+                        console.warn(`  ⚠️ Fichier invalide pour ${docId}:`, fileData);
+                    }
+                }
+            }
+            
+            console.log(`Total: ${totalFiles} fichier(s), ${formatFileSize(totalSize)}`);
+            
+            // 4. MISE À JOUR DE L'INTERFACE
+            var submitBtn = document.getElementById('submitBtn');
+            var originalText = submitBtn.textContent;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Envoi automatique en cours...';
+            
+            // 5. ENVOI VERS LE BACKEND
+            console.log('=== ENVOI VERS LE SERVEUR ===');
+            
+            fetch('/envoyer-demande-ingenierie', {
+                method: 'POST',
+                body: formData
+            })
+            .then(function(response) {
+                console.log('Statut réponse:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                return response.json();
+            })
+            .then(function(data) {
+                console.log('=== RÉPONSE DU SERVEUR ===');
+                console.log('Réponse complète:', data);
+                
+                if (data.status === 'success') {
+                    // Construction du message de succès
+                    var message = '✅ Demande d\'ingénierie envoyée automatiquement avec succès!\n\n';
+                    
+                    // Informations sur les fichiers
+                    if (data.fichiers_count > 0) {
+                        message += `📁 ${data.fichiers_count} document(s) traité(s):\n`;
+                        if (data.fichiers_info && data.fichiers_info.length > 0) {
+                            data.fichiers_info.forEach(function(nom) {
+                                message += `• ${nom}\n`;
+                            });
+                        }
+                        message += '\n';
                     }
                     
-                    message += '\n🎉 Tous les envois demandés ont été effectués automatiquement !';
+                    // Détails des envois
+                    if (data.envoi_auto && data.details_envoi) {
+                        message += '🚀 ENVOIS AUTOMATIQUES RÉUSSIS:\n\n';
+                        
+                        // Email principal
+                        if (data.details_envoi.email_principal) {
+                            message += '📧 Email principal: ✅ Envoyé\n';
+                        } else {
+                            message += '📧 Email principal: ❌ Échec\n';
+                        }
+                        
+                        // Emails ZeenDoc (seulement si activé)
+                        if (data.details_envoi.zeendoc_active) {
+                            if (data.details_envoi.total_emails_zeendoc > 0) {
+                                if (data.details_envoi.total_emails_zeendoc > 1) {
+                                    message += `📁 ZeenDoc: ${data.details_envoi.total_emails_zeendoc} emails envoyés (fichiers volumineux)\n`;
+                                    if (data.details_envoi.zeendoc_parties) {
+                                        data.details_envoi.zeendoc_parties.forEach(function(partie) {
+                                            var status = partie.succes ? '✅' : '❌';
+                                            message += `   └─ Partie ${partie.partie}: ${status} ${partie.fichiers_count} fichier(s)\n`;
+                                        });
+                                    }
+                                } else {
+                                    message += '📁 ZeenDoc: ✅ Email envoyé\n';
+                                }
+                                
+                                if (data.adresse_zeendoc) {
+                                    message += `📮 Adresse ZeenDoc (${data.secteur}): ${data.adresse_zeendoc}\n`;
+                                }
+                            } else {
+                                message += '📁 ZeenDoc: ⚠️ Aucun email envoyé (pas de fichiers)\n';
+                            }
+                        } else {
+                            message += '📁 ZeenDoc: ⏭️ Envoi désactivé (choix utilisateur)\n';
+                        }
+                        
+                        message += '\n🎉 Tous les envois demandés ont été effectués automatiquement !';
+                        
+                        // Informations sur le secteur
+                        if (data.secteur) {
+                            message += `\n\n📍 Secteur: ${data.secteur}`;
+                        }
+                        
+                    } else {
+                        message += '❌ Erreur lors de l\'envoi automatique.\n';
+                        message += 'Détails techniques:\n';
+                        if (data.details_envoi) {
+                            message += JSON.stringify(data.details_envoi, null, 2);
+                        }
+                    }
+                    
+                    alert(message);
+                    
+                    // Réinitialiser le formulaire en cas de succès
+                    console.log('Réinitialisation du formulaire...');
+                    resetForm();
                     
                 } else {
-                    message += '❌ Erreur lors de l\'envoi automatique.\n';
-                    message += 'Veuillez vérifier votre configuration SMTP.';
+                    // Erreur côté serveur
+                    console.error('Erreur serveur:', data);
+                    var errorMessage = '❌ Erreur lors de l\'envoi de la demande:\n\n';
+                    errorMessage += data.message || 'Erreur inconnue du serveur';
+                    
+                    if (data.details) {
+                        errorMessage += '\n\nDétails techniques:\n' + JSON.stringify(data.details, null, 2);
+                    }
+                    
+                    alert(errorMessage);
                 }
+            })
+            .catch(function(error) {
+                console.error('=== ERREUR TECHNIQUE ===');
+                console.error('Erreur complète:', error);
                 
-                alert(message);
+                var errorMessage = '❌ Erreur technique lors de l\'envoi:\n\n';
+                errorMessage += error.message || 'Erreur de connexion ou de serveur';
+                errorMessage += '\n\nVeuillez vérifier votre connexion internet et réessayer.';
+                errorMessage += '\nSi le problème persiste, contactez l\'administrateur.';
                 
-                // Réinitialiser le formulaire
-                resetForm();
+                alert(errorMessage);
+            })
+            .finally(function() {
+                // Restaurer l'état du bouton dans tous les cas
+                console.log('Restauration de l\'interface...');
                 
-            } else {
-                alert('❌ Erreur lors de l\'envoi: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            alert('❌ Erreur technique lors de l\'envoi. Veuillez réessayer.');
-        })
-        .finally(() => {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Envoyer automatiquement la demande d\'ingénierie';
-            updateSubmitButton();
-        });
-    }
-
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                
+                // Mettre à jour l'état du bouton selon les validations
+                updateSubmitButton();
+                
+                console.log('=== FIN TRAITEMENT FORMULAIRE ===');
+            });
+        }
+        
+        // Fonction helper pour formater la taille des fichiers (si pas déjà définie)
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            var k = 1024;
+            var sizes = ['B', 'KB', 'MB', 'GB'];
+            var i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+        
+        // Fonction de réinitialisation du formulaire (si pas déjà définie)
         function resetForm() {
+            console.log('Réinitialisation du formulaire...');
+            
+            // Réinitialiser le formulaire HTML
             document.getElementById('ingenierieForm').reset();
+            
+            // Vider les données de fichiers
             uploadedDocuments = {};
             
+            // Remettre la date d'aujourd'hui
             var today = new Date().toISOString().split('T')[0];
             document.getElementById('dateDemande').value = today;
             
+            // Restaurer les états par défaut
             document.getElementById('regimeGroup').style.display = 'none';
             document.getElementById('autreDemandePrecision').style.display = 'none';
             document.getElementById('objectifsCommuns').style.display = 'block';
@@ -1172,20 +1295,22 @@
             document.getElementById('zeendocWorkflowDetails').style.display = 'block';
             document.getElementById('emailSeulDetails').style.display = 'none';
             
+            // Cacher toutes les listes de fichiers
             var fileLists = document.querySelectorAll('.file-list');
             for (var i = 0; i < fileLists.length; i++) {
                 fileLists[i].classList.add('hidden');
                 fileLists[i].innerHTML = '';
             }
             
-            var submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Envoyer automatiquement la demande d\'ingénierie';
+            // Mettre à jour l'état du bouton
             updateSubmitButton();
+            
+            console.log('Formulaire réinitialisé avec succès');
         }
     </script>
 </body>
 </html>
+
 
 
 
