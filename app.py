@@ -183,7 +183,7 @@ def envoyer_demande_ingenierie():
         
         # Debug 2: Lister toutes les données reçues
         print(f"📋 Form keys: {list(request.form.keys())}")
-        print(f"📋 Form values sample: {dict(list(request.form.items())[:5])}")  # Premiers 5 éléments
+        print(f"📋 Form values sample: {dict(list(request.form.items())[:5])}")
         
         # Debug 3: Analyser request.files EN DÉTAIL
         print(f"📎 Files keys: {list(request.files.keys())}")
@@ -192,40 +192,18 @@ def envoyer_demande_ingenierie():
         # Debug 4: Examiner chaque fichier individuellement
         total_files_received = 0
         for key in request.files.keys():
-            files = request.files.getlist(key)
-            print(f"📁 Key '{key}': {len(files)} fichier(s)")
+            files_list = request.files.getlist(key)  # CORRECTION: Utiliser getlist()
+            print(f"📁 Key '{key}': {len(files_list)} fichier(s)")
             
-            for i, file in enumerate(files):
+            for i, file in enumerate(files_list):
                 if file and file.filename:
                     total_files_received += 1
-                    print(f"  - Fichier {i+1}: {file.filename} ({len(file.read())} bytes)")
-                    file.seek(0)  # Remettre le curseur au début après lecture
+                    # CORRECTION: Ne pas lire le fichier ici pour éviter de vider le buffer
+                    print(f"  - Fichier {i+1}: {file.filename} (stream disponible)")
                 else:
                     print(f"  - Fichier {i+1}: VIDE ou sans nom")
         
         print(f"📊 Total fichiers valides reçus: {total_files_received}")
-        
-        # Debug 5: Vérifier si la méthode de préparation des fichiers fonctionne
-        if total_files_received > 0:
-            print("🔄 Test de préparation des fichiers...")
-            try:
-                # Récupérer quelques données de test
-                data = request.form.to_dict()
-                secteur_conseiller = data.get('secteurConseiller', 'Test')
-                contact1_nom = data.get('nomContact1', 'TestNom')
-                contact1_prenom = data.get('prenomContact1', 'TestPrenom')
-                nom_conseiller = data.get('nomConseiller', 'TestConseiller')
-                
-                # Tester la préparation
-                fichiers_pieces = preparer_fichiers_zeendoc_ingenierie(
-                    request.files, contact1_nom, contact1_prenom, nom_conseiller, secteur_conseiller
-                )
-                print(f"✅ Fichiers préparés: {len(fichiers_pieces)}")
-                for fichier in fichiers_pieces[:3]:  # Afficher les 3 premiers
-                    print(f"  - {fichier['nom']} ({fichier['taille']} bytes)")
-                    
-            except Exception as e:
-                print(f"❌ Erreur préparation fichiers: {str(e)}")
         
         # Vérification de la configuration SMTP
         if not all([SMTP_SERVER, SMTP_USERNAME, SMTP_PASSWORD]):
@@ -234,71 +212,9 @@ def envoyer_demande_ingenierie():
                 "message": "Configuration SMTP incomplète. Veuillez configurer SMTP_SERVER, SMTP_USERNAME et SMTP_PASSWORD."
             }), 500
         
-        print("=== DEBUGGING BACKEND DÉTAILLÉ ===")
-        
-        # Debug 1: Vérifier la requête complète
-        print(f"📥 Content-Type: {request.content_type}")
-        print(f"📥 Content-Length: {request.content_length}")
-        print(f"📥 Method: {request.method}")
-        
-        # Debug 2: Lister toutes les données reçues
-        print(f"📋 Form keys: {list(request.form.keys())}")
-        print(f"📋 Form values sample: {dict(list(request.form.items())[:5])}")  # Premiers 5 éléments
-        
-        # Debug 3: Analyser request.files EN DÉTAIL
-        print(f"📎 Files keys: {list(request.files.keys())}")
-        print(f"📎 Files type: {type(request.files)}")
-        
-        # Debug 4: Examiner chaque fichier individuellement
-        total_files_received = 0
-        for key in request.files.keys():
-            files = request.files.getlist(key)
-            print(f"📁 Key '{key}': {len(files)} fichier(s)")
-            
-            for i, file in enumerate(files):
-                if file and file.filename:
-                    total_files_received += 1
-                    print(f"  - Fichier {i+1}: {file.filename} ({len(file.read())} bytes)")
-                    file.seek(0)  # Remettre le curseur au début après lecture
-                else:
-                    print(f"  - Fichier {i+1}: VIDE ou sans nom")
-        
-        print(f"📊 Total fichiers valides reçus: {total_files_received}")
-        
-        # Debug 5: Vérifier le flag ZeenDoc
-        data = request.form.to_dict()
-        envoyer_vers_zeendoc_flag = data.get('envoyerVersZeendoc', 'NON_TROUVE')
-        print(f"📁 Flag ZeenDoc reçu: '{envoyer_vers_zeendoc_flag}'")
-        envoyer_vers_zeendoc = envoyer_vers_zeendoc_flag == 'true'
-        print(f"📁 ZeenDoc activé (calculé): {envoyer_vers_zeendoc}")
-        
-        # Debug 6: Vérifier si la méthode de préparation des fichiers fonctionne
-        if total_files_received > 0:
-            print("🔄 Test de préparation des fichiers...")
-            try:
-                secteur_conseiller = data.get('secteurConseiller', 'Test')
-                contact1_nom = data.get('nomContact1', 'TestNom')
-                contact1_prenom = data.get('prenomContact1', 'TestPrenom')
-                nom_conseiller = data.get('nomConseiller', 'TestConseiller')
-                
-                # Tester la préparation
-                fichiers_pieces = preparer_fichiers_zeendoc_ingenierie(
-                    request.files, contact1_nom, contact1_prenom, nom_conseiller, secteur_conseiller
-                )
-                print(f"✅ Fichiers préparés: {len(fichiers_pieces)}")
-                for fichier in fichiers_pieces[:3]:  # Afficher les 3 premiers
-                    print(f"  - {fichier['nom']} ({fichier['taille']} bytes)")
-                    
-            except Exception as e:
-                print(f"❌ Erreur préparation fichiers: {str(e)}")
-                import traceback
-                print(f"🔍 Traceback: {traceback.format_exc()}")
-        
-        print("=== FIN DEBUG - DÉBUT TRAITEMENT NORMAL ===")
-        
         # Récupérer les données du formulaire
         data = request.form.to_dict()
-        files = request.files
+        files = request.files  # Utiliser request.files directement
         
         # Récupérer le secteur pour déterminer l'adresse ZeenDoc
         secteur_conseiller = data.get('secteurConseiller', '')
@@ -311,6 +227,10 @@ def envoyer_demande_ingenierie():
         # Vérifier si l'envoi vers ZeenDoc est activé
         envoyer_vers_zeendoc = data.get('envoyerVersZeendoc', 'true') == 'true'
         adresse_zeendoc = obtenir_adresse_zeendoc(secteur_conseiller) if envoyer_vers_zeendoc else None
+        
+        print(f"📁 ZeenDoc activé: {envoyer_vers_zeendoc}")
+        if envoyer_vers_zeendoc:
+            print(f"📧 Adresse ZeenDoc: {adresse_zeendoc}")
         
         # Construire les sujets
         nom_conseiller = data.get('nomConseiller', 'Conseiller')
@@ -328,17 +248,26 @@ def envoyer_demande_ingenierie():
         sujet_principal = f"Demande Ingénierie - {client_principal} - {nom_conseiller} - {date_demande}"
         sujet_zeendoc = f"[ZEENDOC-{secteur_conseiller.upper()}] Ingénierie - {client_principal} - {nom_conseiller}"
         
+        print(f"📧 Sujet principal: {sujet_principal}")
+        if envoyer_vers_zeendoc:
+            print(f"📧 Sujet ZeenDoc: {sujet_zeendoc}")
+        
         # Construire le corps du mail principal
         corps_principal = generer_corps_email_ingenierie(data, adresse_zeendoc if envoyer_vers_zeendoc else None)
         
-        # Préparer les fichiers pour ZeenDoc (seulement si envoi activé)
+        # Préparer les fichiers
         fichiers_pieces = []
-        if files and any(file.filename for file in files.values() if file):
+        if total_files_received > 0:
             if envoyer_vers_zeendoc:
+                print("🔄 Préparation fichiers pour ZeenDoc...")
                 fichiers_pieces = preparer_fichiers_zeendoc_ingenierie(files, contact1_nom, contact1_prenom, nom_conseiller, secteur_conseiller)
             else:
-                # Pour l'email principal seulement, garder noms originaux
+                print("🔄 Préparation fichiers pour email principal uniquement...")
                 fichiers_pieces = preparer_fichiers_email_principal(files)
+        else:
+            print("📁 Aucun fichier à traiter")
+        
+        print(f"📊 Fichiers préparés: {len(fichiers_pieces)}")
         
         # Envoi automatique des emails
         envoi_auto_reussi = False
@@ -346,10 +275,6 @@ def envoyer_demande_ingenierie():
         
         try:
             print(f"📧 Début des envois automatiques d'ingénierie pour secteur: {secteur_conseiller}")
-            if envoyer_vers_zeendoc:
-                print(f"📧 Adresse ZeenDoc: {adresse_zeendoc}")
-            else:
-                print("📧 ZeenDoc désactivé - Email principal uniquement")
             
             # 1. Email PRINCIPAL avec ZIP si nécessaire
             print("📧 Envoi email principal...")
@@ -370,8 +295,10 @@ def envoyer_demande_ingenierie():
                     sujet_zeendoc, 
                     corps_zeendoc, 
                     fichiers_pieces,
-                    adresse_zeendoc  # Adresse selon secteur
+                    adresse_zeendoc
                 )
+            elif envoyer_vers_zeendoc:
+                print("⚠️ ZeenDoc activé mais aucun fichier à envoyer")
             
             # Vérification globale
             zeendoc_reussi = all(r.get('succes', False) for r in resultats_zeendoc) if resultats_zeendoc else True
@@ -391,6 +318,8 @@ def envoyer_demande_ingenierie():
             
         except Exception as e:
             print(f"❌ Erreur envoi automatique ingénierie: {str(e)}")
+            import traceback
+            print(f"🔍 Traceback: {traceback.format_exc()}")
             return jsonify({
                 "status": "error", 
                 "message": f"Erreur lors de l'envoi automatique: {str(e)}"
@@ -409,7 +338,9 @@ def envoyer_demande_ingenierie():
         })
         
     except Exception as e:
-        print(f"Erreur générale ingénierie: {str(e)}")
+        print(f"❌ Erreur générale ingénierie: {str(e)}")
+        import traceback
+        print(f"🔍 Traceback: {traceback.format_exc()}")
         return jsonify({"status": "error", "message": f"Erreur lors du traitement: {str(e)}"}), 500
 
 def envoyer_email_principal_auto(sujet, corps, fichiers_pieces, data, type_demande="standard"):
@@ -705,39 +636,65 @@ Partie actuelle: {index}/{total}
 
 # ===== FONCTIONS POUR LES DEMANDES STANDARD (avec multi-secteurs) =====
 
-def preparer_fichiers_zeendoc(files, nom, prenom, type_demande):
-    """Prépare les fichiers pour l'envoi vers ZeenDoc - demandes standard"""
+def preparer_fichiers_zeendoc_ingenierie(files, nom, prenom, conseiller, secteur):
+    """Prépare les fichiers pour l'envoi vers ZeenDoc - version ingénierie"""
     
     fichiers_pieces = []
     
-    for key, file in files.items():
-        if file and file.filename:
-            try:
-                # Lire le contenu du fichier
-                file_content = file.read()
-                file.seek(0)  # Remettre le curseur au début
-                
-                # Générer un nom de fichier standardisé
-                nom_standardise = generer_nom_fichier_zeendoc(
-                    file.filename, 
-                    nom, 
-                    prenom, 
-                    type_demande,
-                    key
-                )
-                
-                fichiers_pieces.append({
-                    'nom': nom_standardise,
-                    'nom_original': file.filename,
-                    'contenu': file_content,
-                    'type_mime': file.content_type or 'application/octet-stream',
-                    'taille': len(file_content),
-                    'categorie': obtenir_categorie_document(key)
-                })
-                
-            except Exception as e:
-                print(f"Erreur préparation fichier {file.filename}: {str(e)}")
-                continue
+    print(f"🔧 Préparation fichiers ingénierie pour: {nom} {prenom}, conseiller: {conseiller}, secteur: {secteur}")
+    
+    # CORRECTION: Utiliser request.files.items() au lieu de files.items()
+    # Et traiter chaque clé comme pouvant avoir plusieurs fichiers
+    for key in files.keys():
+        files_list = files.getlist(key)  # Obtenir tous les fichiers pour cette clé
+        print(f"📁 Traitement clé '{key}': {len(files_list)} fichier(s)")
+        
+        for file in files_list:
+            if file and file.filename:
+                try:
+                    print(f"  📄 Traitement fichier: {file.filename}")
+                    
+                    # Lire le contenu du fichier
+                    file_content = file.read()
+                    file.seek(0)  # Remettre le curseur au début
+                    
+                    print(f"  📊 Taille lue: {len(file_content)} bytes")
+                    
+                    # Générer un nom de fichier standardisé pour ingénierie
+                    nom_standardise = generer_nom_fichier_zeendoc_ingenierie(
+                        file.filename, 
+                        nom, 
+                        prenom, 
+                        conseiller,
+                        secteur,
+                        key
+                    )
+                    
+                    print(f"  🏷️ Nom standardisé: {nom_standardise}")
+                    
+                    fichier_data = {
+                        'nom': nom_standardise,
+                        'nom_original': file.filename,
+                        'contenu': file_content,
+                        'type_mime': file.content_type or 'application/octet-stream',
+                        'taille': len(file_content),
+                        'categorie': obtenir_categorie_document_ingenierie(key)
+                    }
+                    
+                    fichiers_pieces.append(fichier_data)
+                    print(f"  ✅ Fichier ajouté: {nom_standardise} ({len(file_content)} bytes)")
+                    
+                except Exception as e:
+                    print(f"  ❌ Erreur préparation fichier {file.filename}: {str(e)}")
+                    import traceback
+                    print(f"  🔍 Traceback: {traceback.format_exc()}")
+                    continue
+            else:
+                print(f"  ⚠️ Fichier vide ou sans nom pour la clé '{key}'")
+    
+    print(f"📊 Total fichiers préparés: {len(fichiers_pieces)}")
+    for i, f in enumerate(fichiers_pieces):
+        print(f"  {i+1}. {f['nom']} ({f['taille']} bytes, catégorie: {f['categorie']})")
     
     return fichiers_pieces
 
@@ -941,26 +898,37 @@ def preparer_fichiers_email_principal(files):
     
     fichiers_pieces = []
     
-    for key, file in files.items():
-        if file and file.filename:
-            try:
-                # Lire le contenu du fichier
-                file_content = file.read()
-                file.seek(0)  # Remettre le curseur au début
-                
-                fichiers_pieces.append({
-                    'nom': file.filename,  # Garder le nom original
-                    'nom_original': file.filename,
-                    'contenu': file_content,
-                    'type_mime': file.content_type or 'application/octet-stream',
-                    'taille': len(file_content),
-                    'categorie': 'Documents'  # Catégorie générique
-                })
-                
-            except Exception as e:
-                print(f"Erreur préparation fichier email principal {file.filename}: {str(e)}")
-                continue
+    print("🔧 Préparation fichiers pour email principal...")
     
+    for key in files.keys():
+        files_list = files.getlist(key)  # CORRECTION: Utiliser getlist()
+        print(f"📁 Traitement clé '{key}': {len(files_list)} fichier(s)")
+        
+        for file in files_list:
+            if file and file.filename:
+                try:
+                    print(f"  📄 Traitement fichier: {file.filename}")
+                    
+                    # Lire le contenu du fichier
+                    file_content = file.read()
+                    file.seek(0)  # Remettre le curseur au début
+                    
+                    fichiers_pieces.append({
+                        'nom': file.filename,  # Garder le nom original
+                        'nom_original': file.filename,
+                        'contenu': file_content,
+                        'type_mime': file.content_type or 'application/octet-stream',
+                        'taille': len(file_content),
+                        'categorie': 'Documents'  # Catégorie générique
+                    })
+                    
+                    print(f"  ✅ Fichier ajouté: {file.filename} ({len(file_content)} bytes)")
+                    
+                except Exception as e:
+                    print(f"  ❌ Erreur préparation fichier email principal {file.filename}: {str(e)}")
+                    continue
+    
+    print(f"📊 Total fichiers préparés pour email principal: {len(fichiers_pieces)}")
     return fichiers_pieces
 
 def preparer_fichiers_zeendoc_ingenierie(files, nom, prenom, conseiller, secteur):
