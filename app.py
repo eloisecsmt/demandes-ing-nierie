@@ -907,18 +907,18 @@ Secteur: {secteur}
 # ===== FONCTIONS POUR LES DEMANDES D'INGÉNIERIE (avec multi-secteurs) =====
 
 def preparer_fichiers_email_principal(files):
-    """Prépare les fichiers pour l'email principal uniquement (sans nommage ZeenDoc) - CORRIGÉE"""
+    """Prépare les fichiers pour l'email principal avec noms standardisés - CORRIGÉE"""
     
     fichiers_pieces = []
     
-    print("🔧 Préparation fichiers pour email principal...")
+    print("🔧 Préparation fichiers pour email principal avec noms standardisés...")
     
     for key in files.keys():
-        files_list = files.getlist(key)  # CORRECTION: Utiliser getlist()
+        files_list = files.getlist(key)
         print(f"📁 Traitement clé '{key}': {len(files_list)} fichier(s)")
         
         for file in files_list:
-            if file and file.filename and file.filename.strip():  # AJOUT: Vérifier que le nom n'est pas vide
+            if file and file.filename and file.filename.strip():
                 try:
                     print(f"  📄 Traitement fichier: {file.filename}")
                     
@@ -926,20 +926,52 @@ def preparer_fichiers_email_principal(files):
                     file_content = file.read()
                     file.seek(0)  # Remettre le curseur au début
                     
-                    if len(file_content) == 0:  # AJOUT: Vérifier que le fichier n'est pas vide
+                    if len(file_content) == 0:
                         print(f"  ⚠️ Fichier vide ignoré: {file.filename}")
                         continue
                     
+                    # CORRECTION : Générer un nom standardisé même pour l'email principal
+                    # Il faut récupérer les infos depuis les données du formulaire
+                    # On va créer une version simplifiée du nom standardisé
+                    
+                    # Extraire l'extension
+                    extension = ""
+                    if '.' in file.filename:
+                        extension = file.filename.split('.')[-1].lower()
+                    
+                    # Mapper les IDs vers des noms courts
+                    mapping_docs = {
+                        'ficheRenseignement': 'Fiche_Renseignement',
+                        'avisImposition': 'Avis_Imposition',
+                        'bulletinsSalaire': 'Bulletins_Salaire',
+                        'infosRetraite': 'Infos_Retraite',
+                        'relevesPlacement': 'Releves_Placement',
+                        'profilRisques': 'Profil_Risques',
+                        'cniLivret': 'CNI_Livret',
+                        'tableauAmortissement': 'Tableau_Amortissement',
+                        'autresDocuments': 'Autres_Documents'
+                    }
+                    
+                    doc_type = mapping_docs.get(key, 'Document')
+                    date_str = datetime.now().strftime('%Y%m%d')
+                    
+                    # Nom standardisé pour email principal (plus simple que ZeenDoc)
+                    nom_standardise = f"EMAIL_{doc_type}_{date_str}"
+                    if extension:
+                        nom_standardise += f".{extension}"
+                    
+                    print(f"  🏷️ Nom standardisé email principal: {nom_standardise}")
+                    
                     fichiers_pieces.append({
-                        'nom': file.filename,  # Garder le nom original
+                        'nom': nom_standardise,  # ← CORRECTION : Utiliser le nom standardisé
                         'nom_original': file.filename,
                         'contenu': file_content,
                         'type_mime': file.content_type or 'application/octet-stream',
                         'taille': len(file_content),
-                        'categorie': 'Documents'  # Catégorie générique
+                        'categorie': obtenir_categorie_document_ingenierie(key)
                     })
                     
-                    print(f"  ✅ Fichier ajouté: {file.filename} ({len(file_content)} bytes)")
+                    print(f"  ✅ Fichier ajouté: {nom_standardise} ({len(file_content)} bytes)")
                     
                 except Exception as e:
                     print(f"  ❌ Erreur préparation fichier email principal {file.filename}: {str(e)}")
