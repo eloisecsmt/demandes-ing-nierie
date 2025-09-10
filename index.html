@@ -805,53 +805,76 @@
             });
         }
 
-        function handleDocumentUpload(inputId, docName) {
-        const input = document.getElementById(inputId);
+        function handleDocumentUpload(inputId) {
+            const input = document.getElementById(inputId);
+            
+            // Récupérer les infos du client
+            const nomConseiller = document.getElementById('nomConseiller').value;
+            const nomContact1 = document.getElementById('nomContact1').value;
+            const prenomContact1 = document.getElementById('prenomContact1').value;
+            const secteurConseiller = document.getElementById('secteurConseiller').value;
+            
+            if (!uploadedDocuments[inputId]) {
+                uploadedDocuments[inputId] = [];
+            }
         
-        // Récupérer les infos du client
-        const nomConseiller = document.getElementById('nomConseiller').value;
-        const nomContact1 = document.getElementById('nomContact1').value;
-        const prenomContact1 = document.getElementById('prenomContact1').value;
-        const secteurConseiller = document.getElementById('secteurConseiller').value;
+            if (input.files.length > 0) {
+                Array.from(input.files).forEach(file => {
+                    // CORRECTION: Vérifier que le fichier a un nom valide
+                    if (!file.name || !file.name.trim()) {
+                        console.warn('Fichier sans nom ignoré:', file);
+                        return;
+                    }
+                    
+                    // CORRECTION: Vérifier que le fichier n'est pas vide
+                    if (file.size === 0) {
+                        console.warn('Fichier vide ignoré:', file.name);
+                        return;
+                    }
+                    
+                    // Générer le nom ZeenDoc automatiquement
+                    const nomZeenDoc = genererNomZeenDocIngenierie(
+                        file.name, 
+                        nomContact1, 
+                        prenomContact1, 
+                        nomConseiller, 
+                        secteurConseiller, 
+                        inputId
+                    );
+                    
+                    // Vérifier si le fichier n'est pas déjà dans la liste
+                    const exists = uploadedDocuments[inputId].some(existingFile => 
+                        existingFile.nomOriginal === file.name && 
+                        existingFile.file.size === file.size &&
+                        existingFile.file.lastModified === file.lastModified
+                    );
+                    
+                    if (!exists) {
+                        const fileData = {
+                            file: file,
+                            nomOriginal: file.name,
+                            nomZeenDoc: nomZeenDoc,
+                            id: Date.now() + Math.random()
+                        };
+                        
+                        uploadedDocuments[inputId].push(fileData);
+                        console.log('Fichier ajouté à uploadedDocuments:', {
+                            inputId: inputId,
+                            fileName: file.name,
+                            fileSize: file.size,
+                            nomZeenDoc: nomZeenDoc
+                        });
+                    } else {
+                        console.log('Fichier déjà présent, ignoré:', file.name);
+                    }
+                });
         
-        if (!uploadedDocuments[inputId]) {
-            uploadedDocuments[inputId] = [];
+                updateFileList(inputId);
+            }
+        
+            input.value = '';
+            updateSubmitButton();
         }
-    
-        if (input.files.length > 0) {
-            Array.from(input.files).forEach(file => {
-                // Générer le nom ZeenDoc automatiquement
-                const nomZeenDoc = genererNomZeenDocIngenierie(
-                    file.name, 
-                    nomContact1, 
-                    prenomContact1, 
-                    nomConseiller, 
-                    secteurConseiller, 
-                    inputId
-                );
-                
-                // Vérifier si le fichier n'est pas déjà dans la liste
-                const exists = uploadedDocuments[inputId].some(existingFile => 
-                    existingFile.nomOriginal === file.name && existingFile.file.size === file.size
-                );
-                
-                if (!exists) {
-                    uploadedDocuments[inputId].push({
-                        file: file,
-                        name: docName,  // ← AJOUTER CETTE LIGNE
-                        nomOriginal: file.name,
-                        nomZeenDoc: nomZeenDoc,
-                        id: Date.now() + Math.random()
-                    });
-                }
-            });
-    
-            updateFileList(inputId);
-        }
-    
-        input.value = '';
-        updateSubmitButton();
-    }
 
 
         function genererNomZeenDocIngenierie(nomFichier, nomContact1, prenomContact1, nomConseiller, secteurConseiller, docId) {
@@ -977,31 +1000,51 @@
         }
 
         function checkRequiredDocuments() {
-        var envoyerVersZeendocCheckbox = document.getElementById('envoyerVersZeendocCheckbox');
-        console.log('=== CHECK REQUIRED DOCUMENTS ===');
-        console.log('ZeenDoc checkbox checked:', envoyerVersZeendocCheckbox.checked);
-        
-        if (!envoyerVersZeendocCheckbox.checked) {
-            console.log('ZeenDoc désactivé - pas de documents requis');
+            var envoyerVersZeendocCheckbox = document.getElementById('envoyerVersZeendocCheckbox');
+            console.log('=== CHECK REQUIRED DOCUMENTS ===');
+            console.log('ZeenDoc checkbox checked:', envoyerVersZeendocCheckbox.checked);
+            
+            if (!envoyerVersZeendocCheckbox.checked) {
+                console.log('ZeenDoc désactivé - pas de documents requis');
+                return true;
+            }
+            
+            console.log('Documents requis:', requiredDocuments);
+            console.log('Documents uploadés disponibles:', Object.keys(uploadedDocuments));
+            
+            for (var i = 0; i < requiredDocuments.length; i++) {
+                var docId = requiredDocuments[i];
+                var hasFiles = uploadedDocuments[docId] && 
+                              Array.isArray(uploadedDocuments[docId]) && 
+                              uploadedDocuments[docId].length > 0;
+                
+                console.log(`${docId}: ${hasFiles ? 'OK' : 'MANQUANT'}`);
+                
+                if (hasFiles) {
+                    // Vérifier que les fichiers sont valides
+                    var validFiles = uploadedDocuments[docId].filter(fileData => 
+                        fileData.file && 
+                        fileData.file instanceof File && 
+                        fileData.file.name && 
+                        fileData.file.name.trim() &&
+                        fileData.file.size > 0
+                    );
+                    
+                    if (validFiles.length === 0) {
+                        console.log(`Document ${docId}: fichiers présents mais invalides`);
+                        return false;
+                    } else {
+                        console.log(`Document ${docId}: ${validFiles.length} fichier(s) valide(s)`);
+                    }
+                } else {
+                    console.log('Document manquant:', docId);
+                    return false;
+                }
+            }
+            
+            console.log('Tous les documents requis sont présents et valides');
             return true;
         }
-        
-        console.log('Documents requis:', requiredDocuments);
-        
-        for (var i = 0; i < requiredDocuments.length; i++) {
-            var docId = requiredDocuments[i];
-            var hasFiles = uploadedDocuments[docId] && uploadedDocuments[docId].length > 0; // ← CETTE LIGNE ÉTAIT MANQUANTE
-            console.log(`${docId}: ${hasFiles ? 'OK' : 'MANQUANT'}`);
-            
-            if (!hasFiles) {
-                console.log('Document manquant:', docId);
-                return false;
-            }
-        }
-        
-        console.log('Tous les documents requis sont présents');
-        return true;
-    }
 
         function checkObjectifs() {
             var objectifsCommunsCheckbox = document.getElementById('objectifsCommunsCheckbox');
@@ -1049,13 +1092,13 @@
             
             // 2. AJOUTER LES PARAMÈTRES SPÉCIAUX
             
-            // Flag ZeenDoc
+            // CORRECTION MAJEURE: Bien passer le flag ZeenDoc
             formData.append('envoyerVersZeendoc', zeendocActive ? 'true' : 'false');
+            console.log('Flag ZeenDoc ajouté au FormData:', zeendocActive ? 'true' : 'false');
             
             // Gestion des objectifs patrimoniaux
             var objectifsCommunsCheckbox = document.getElementById('objectifsCommunsCheckbox');
             if (objectifsCommunsCheckbox.checked) {
-                // Objectifs communs
                 var objectifs = [];
                 var objectifsInputs = document.querySelectorAll('input[name="objectifs"]:checked');
                 for (var i = 0; i < objectifsInputs.length; i++) {
@@ -1066,7 +1109,6 @@
                 
                 console.log('Objectifs communs sélectionnés:', objectifs);
             } else {
-                // Objectifs séparés
                 var objectifsContact1 = [];
                 var objectifs1Inputs = document.querySelectorAll('input[name="objectifsContact1"]:checked');
                 for (var i = 0; i < objectifs1Inputs.length; i++) {
@@ -1109,8 +1151,8 @@
                 for (var i = 0; i < filesForDoc.length; i++) {
                     var fileData = filesForDoc[i];
                     
-                    // Vérifier que le fichier existe
-                    if (fileData.file && fileData.file instanceof File) {
+                    // CORRECTION: Vérifier que le fichier existe et a un nom valide
+                    if (fileData.file && fileData.file instanceof File && fileData.file.name && fileData.file.name.trim()) {
                         formData.append(docId, fileData.file);
                         totalFiles++;
                         totalSize += fileData.file.size;
@@ -1119,6 +1161,8 @@
                         console.log(`    → Nom ZeenDoc: ${fileData.nomZeenDoc}`);
                     } else {
                         console.warn(`  ⚠️ Fichier invalide pour ${docId}:`, fileData);
+                        console.warn(`    - File object:`, fileData.file);
+                        console.warn(`    - File name:`, fileData.file ? fileData.file.name : 'NO FILE');
                     }
                 }
             }
@@ -1220,9 +1264,14 @@
                     
                     alert(message);
                     
-                    // Réinitialiser le formulaire en cas de succès
-                    console.log('Réinitialisation du formulaire...');
-                    resetForm();
+                    // CORRECTION: Demander confirmation avant de réinitialiser
+                    var shouldReset = confirm('✅ Envoi réussi ! Voulez-vous réinitialiser le formulaire pour une nouvelle demande ?');
+                    if (shouldReset) {
+                        console.log('Réinitialisation du formulaire demandée par l\'utilisateur...');
+                        resetForm();
+                    } else {
+                        console.log('Formulaire conservé à la demande de l\'utilisateur');
+                    }
                     
                 } else {
                     // Erreur côté serveur
@@ -1280,6 +1329,7 @@
             
             // Vider les données de fichiers
             uploadedDocuments = {};
+            console.log('uploadedDocuments vidé:', uploadedDocuments);
             
             // Remettre la date d'aujourd'hui
             var today = new Date().toISOString().split('T')[0];
@@ -1302,14 +1352,70 @@
                 fileLists[i].innerHTML = '';
             }
             
+            // Réinitialiser tous les inputs de fichiers
+            var fileInputs = document.querySelectorAll('input[type="file"]');
+            for (var i = 0; i < fileInputs.length; i++) {
+                fileInputs[i].value = '';
+            }
+            
             // Mettre à jour l'état du bouton
             updateSubmitButton();
             
             console.log('Formulaire réinitialisé avec succès');
         }
+
+        function debugUploadedFiles() {
+            console.log('=== DEBUG UPLOADED FILES ===');
+            console.log('Nombre de catégories:', Object.keys(uploadedDocuments).length);
+            
+            for (var docId in uploadedDocuments) {
+                var files = uploadedDocuments[docId];
+                console.log(`\n📁 ${docId}: ${files.length} fichier(s)`);
+                
+                files.forEach((fileData, index) => {
+                    console.log(`  ${index + 1}. ${fileData.nomOriginal}`);
+                    console.log(`     - Taille: ${fileData.file ? fileData.file.size : 'NO FILE'} bytes`);
+                    console.log(`     - Type: ${fileData.file ? fileData.file.type : 'NO FILE'}`);
+                    console.log(`     - Nom ZeenDoc: ${fileData.nomZeenDoc}`);
+                    console.log(`     - File object valide: ${fileData.file instanceof File}`);
+                });
+            }
+            
+            console.log('=== FIN DEBUG ===');
+        }
+
+        function validateFile(file, inputId) {
+            var errors = [];
+            
+            // Vérifier le nom
+            if (!file.name || !file.name.trim()) {
+                errors.push('Nom de fichier manquant');
+            }
+            
+            // Vérifier la taille
+            if (file.size === 0) {
+                errors.push('Fichier vide');
+            }
+            
+            // Vérifier la taille maximale (50MB par exemple)
+            var maxSize = 50 * 1024 * 1024; // 50MB
+            if (file.size > maxSize) {
+                errors.push(`Fichier trop volumineux (max: ${formatFileSize(maxSize)})`);
+            }
+            
+            // Vérifier le type de fichier
+            var allowedTypes = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'];
+            var fileExtension = file.name.toLowerCase().split('.').pop();
+            if (!allowedTypes.includes('.' + fileExtension)) {
+                errors.push(`Type de fichier non autorisé. Types acceptés: ${allowedTypes.join(', ')}`);
+            }
+            
+            return errors;
+        }
     </script>
 </body>
 </html>
+
 
 
 
