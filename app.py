@@ -196,9 +196,8 @@ def envoyer_demande_ingenierie():
             print(f"📁 Key '{key}': {len(files_list)} fichier(s)")
             
             for i, file in enumerate(files_list):
-                if file and file.filename:
+                if file and file.filename and file.filename.strip():  # AJOUT: Vérifier nom non vide
                     total_files_received += 1
-                    # CORRECTION: Ne pas lire le fichier ici pour éviter de vider le buffer
                     print(f"  - Fichier {i+1}: {file.filename} (stream disponible)")
                 else:
                     print(f"  - Fichier {i+1}: VIDE ou sans nom")
@@ -224,13 +223,19 @@ def envoyer_demande_ingenierie():
                 "message": "Le secteur du conseiller est obligatoire pour déterminer l'adresse de dépôt ZeenDoc."
             }), 400
         
-        # Vérifier si l'envoi vers ZeenDoc est activé
-        envoyer_vers_zeendoc = data.get('envoyerVersZeendoc', 'true') == 'true'
+        # CORRECTION: Vérifier si l'envoi vers ZeenDoc est activé
+        envoyer_vers_zeendoc_str = data.get('envoyerVersZeendoc', 'false')
+        envoyer_vers_zeendoc = envoyer_vers_zeendoc_str.lower() == 'true'
+        
+        print(f"📁 Paramètre envoyerVersZeendoc reçu: '{envoyer_vers_zeendoc_str}'")
+        print(f"📁 ZeenDoc activé (après conversion): {envoyer_vers_zeendoc}")
+        
         adresse_zeendoc = obtenir_adresse_zeendoc(secteur_conseiller) if envoyer_vers_zeendoc else None
         
-        print(f"📁 ZeenDoc activé: {envoyer_vers_zeendoc}")
         if envoyer_vers_zeendoc:
             print(f"📧 Adresse ZeenDoc: {adresse_zeendoc}")
+        else:
+            print("📧 ZeenDoc désactivé par l'utilisateur")
         
         # Construire les sujets
         nom_conseiller = data.get('nomConseiller', 'Conseiller')
@@ -299,6 +304,8 @@ def envoyer_demande_ingenierie():
                 )
             elif envoyer_vers_zeendoc:
                 print("⚠️ ZeenDoc activé mais aucun fichier à envoyer")
+            else:
+                print("⚠️ ZeenDoc désactivé par l'utilisateur")
             
             # Vérification globale
             zeendoc_reussi = all(r.get('succes', False) for r in resultats_zeendoc) if resultats_zeendoc else True
@@ -314,7 +321,8 @@ def envoyer_demande_ingenierie():
                 'adresse_zeendoc': adresse_zeendoc
             }
             
-            print(f"✅ Envois ingénierie terminés - Principal: {envoi_principal}, ZeenDoc ({secteur_conseiller}): {zeendoc_reussi if envoyer_vers_zeendoc else 'désactivé'}")
+            status_zeendoc = "activé" if envoyer_vers_zeendoc else "désactivé"
+            print(f"✅ Envois ingénierie terminés - Principal: {envoi_principal}, ZeenDoc ({secteur_conseiller}): {zeendoc_reussi if envoyer_vers_zeendoc else status_zeendoc}")
             
         except Exception as e:
             print(f"❌ Erreur envoi automatique ingénierie: {str(e)}")
@@ -342,6 +350,7 @@ def envoyer_demande_ingenierie():
         import traceback
         print(f"🔍 Traceback: {traceback.format_exc()}")
         return jsonify({"status": "error", "message": f"Erreur lors du traitement: {str(e)}"}), 500
+        
 
 def envoyer_email_principal_auto(sujet, corps, fichiers_pieces, data, type_demande="standard"):
     """Email principal avec compression ZIP si trop lourd"""
@@ -637,26 +646,30 @@ Partie actuelle: {index}/{total}
 # ===== FONCTIONS POUR LES DEMANDES STANDARD (avec multi-secteurs) =====
 
 def preparer_fichiers_zeendoc_ingenierie(files, nom, prenom, conseiller, secteur):
-    """Prépare les fichiers pour l'envoi vers ZeenDoc - version ingénierie"""
+    """Prépare les fichiers pour l'envoi vers ZeenDoc - version ingénierie CORRIGÉE"""
     
     fichiers_pieces = []
     
     print(f"🔧 Préparation fichiers ingénierie pour: {nom} {prenom}, conseiller: {conseiller}, secteur: {secteur}")
     
-    # CORRECTION: Utiliser request.files.items() au lieu de files.items()
+    # CORRECTION MAJEURE: Utiliser request.files.items() au lieu de files.items()
     # Et traiter chaque clé comme pouvant avoir plusieurs fichiers
     for key in files.keys():
         files_list = files.getlist(key)  # Obtenir tous les fichiers pour cette clé
         print(f"📁 Traitement clé '{key}': {len(files_list)} fichier(s)")
         
         for file in files_list:
-            if file and file.filename:
+            if file and file.filename and file.filename.strip():  # AJOUT: Vérifier que le nom n'est pas vide
                 try:
                     print(f"  📄 Traitement fichier: {file.filename}")
                     
                     # Lire le contenu du fichier
                     file_content = file.read()
                     file.seek(0)  # Remettre le curseur au début
+                    
+                    if len(file_content) == 0:  # AJOUT: Vérifier que le fichier n'est pas vide
+                        print(f"  ⚠️ Fichier vide ignoré: {file.filename}")
+                        continue
                     
                     print(f"  📊 Taille lue: {len(file_content)} bytes")
                     
@@ -894,7 +907,7 @@ Secteur: {secteur}
 # ===== FONCTIONS POUR LES DEMANDES D'INGÉNIERIE (avec multi-secteurs) =====
 
 def preparer_fichiers_email_principal(files):
-    """Prépare les fichiers pour l'email principal uniquement (sans nommage ZeenDoc)"""
+    """Prépare les fichiers pour l'email principal uniquement (sans nommage ZeenDoc) - CORRIGÉE"""
     
     fichiers_pieces = []
     
@@ -905,13 +918,17 @@ def preparer_fichiers_email_principal(files):
         print(f"📁 Traitement clé '{key}': {len(files_list)} fichier(s)")
         
         for file in files_list:
-            if file and file.filename:
+            if file and file.filename and file.filename.strip():  # AJOUT: Vérifier que le nom n'est pas vide
                 try:
                     print(f"  📄 Traitement fichier: {file.filename}")
                     
                     # Lire le contenu du fichier
                     file_content = file.read()
                     file.seek(0)  # Remettre le curseur au début
+                    
+                    if len(file_content) == 0:  # AJOUT: Vérifier que le fichier n'est pas vide
+                        print(f"  ⚠️ Fichier vide ignoré: {file.filename}")
+                        continue
                     
                     fichiers_pieces.append({
                         'nom': file.filename,  # Garder le nom original
@@ -927,6 +944,8 @@ def preparer_fichiers_email_principal(files):
                 except Exception as e:
                     print(f"  ❌ Erreur préparation fichier email principal {file.filename}: {str(e)}")
                     continue
+            else:
+                print(f"  ⚠️ Fichier vide ou sans nom pour la clé '{key}'")
     
     print(f"📊 Total fichiers préparés pour email principal: {len(fichiers_pieces)}")
     return fichiers_pieces
