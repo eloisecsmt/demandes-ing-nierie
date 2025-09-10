@@ -1265,13 +1265,8 @@
                     alert(message);
                     
                     // CORRECTION: Demander confirmation avant de réinitialiser
-                    var shouldReset = confirm('✅ Envoi réussi ! Voulez-vous réinitialiser le formulaire pour une nouvelle demande ?');
-                    if (shouldReset) {
-                        console.log('Réinitialisation du formulaire demandée par l\'utilisateur...');
-                        resetForm();
-                    } else {
-                        console.log('Formulaire conservé à la demande de l\'utilisateur');
-                    }
+                    console.log('Réinitialisation automatique du formulaire...');
+                    resetForm();
                     
                 } else {
                     // Erreur côté serveur
@@ -1415,6 +1410,7 @@
     </script>
 </body>
 </html>
+
 
 
 
